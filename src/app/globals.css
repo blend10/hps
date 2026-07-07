@@ -49,3 +49,135 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+/* --- Hero "opening" reveal (see components/general/Hero.jsx) --------------
+   All effects start hidden and animate in on first paint. animation-delay is
+   applied inline per element to stagger the cascade. Disabled wholesale under
+   prefers-reduced-motion so the hero snaps straight to its resting state. */
+@keyframes hpsHeroExpand {
+  0% {
+    width: min(1000px, 92vw);
+    height: min(400px, 70vh);
+    border-radius: 18px;
+    opacity: 0;
+  }
+  8% {
+    width: min(1000px, 92vw);
+    height: min(400px, 70vh);
+    border-radius: 18px;
+    opacity: 1;
+  }
+  45% {
+    /* Hold small and still for ~0.6s before the grow begins. */
+    width: min(1000px, 92vw);
+    height: min(400px, 70vh);
+    border-radius: 18px;
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+  }
+}
+@keyframes hpsHeroRise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hpsHeroFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hpsScrollHint {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
+.hero-frame {
+  /* Resting state = fullscreen; the animation grows into this from 800×600.
+     Centred with a translate so the box expands from the middle outward. */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  opacity: 0;
+  animation: hpsHeroExpand 1.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+  will-change: width, height;
+}
+/* The source video is 16:9. On portrait viewports that ratio is much wider
+   than the container, so object-cover zooms in hard and crops most of the
+   frame out. Switch to contain there — the section (bg-black) letterboxes
+   the video instead of cutting it off. */
+@media (orientation: portrait) {
+  .hero-frame video {
+    object-fit: contain;
+  }
+}
+.hero-reveal {
+  opacity: 0;
+  animation: hpsHeroRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-fade {
+  opacity: 0;
+  animation: hpsHeroFade 1s ease-out both;
+}
+.hero-scroll-hint {
+  animation: hpsScrollHint 1.8s ease-in-out infinite;
+}
+
+/* The global nav is hidden during the hero's opening sequence and slides in
+   only once the video has finished growing (see Header.jsx → header-intro,
+   applied on the homepage only). Delay is aligned to the end of the grow. */
+@keyframes hpsHeaderIn {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.header-intro {
+  opacity: 0;
+  animation: hpsHeaderIn 0.6s ease-out 1.75s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal,
+  .hero-fade,
+  .header-intro {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .hero-frame {
+    /* Keep the centring transform — just skip the grow and sit at fullscreen. */
+    animation: none;
+    opacity: 1;
+  }
+  .hero-scroll-hint {
+    animation: none;
+  }
+}
