@@ -156,7 +156,10 @@ body {
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    /* Land on `none`, not translateY(0): a lingering transform on the header
+       would make it the backdrop-root for the pill's backdrop-filter and stop
+       the blur from showing the page behind it. */
+    transform: none;
   }
 }
 .header-intro {
