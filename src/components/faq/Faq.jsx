@@ -179,8 +179,10 @@ const Faq = () => {
             </nav>
           </aside>
 
-          {/* RIGHT — active category heading + accordion. */}
-          <div className="min-w-0 border-l border-dashed border-white/20 pb-24 pl-0 md:pl-12 lg:pl-16">
+          {/* RIGHT — active category heading + accordion. The dashed left
+              border only divides the two columns, so it appears from md up
+              where the layout is actually two columns. */}
+          <div className="min-w-0 pb-24 md:border-l md:border-dashed md:border-white/20 md:pl-12 lg:pl-16">
             <div className="py-16 md:py-24">
               <h3 className="border-b border-white/20 pb-6 text-3xl font-medium tracking-tight md:text-4xl">
                 {category.heading}
@@ -220,7 +222,7 @@ const Faq = () => {
                         }`}
                       >
                         <div className="overflow-hidden">
-                          <p className="pb-6 pr-10 text-[14px] leading-relaxed text-neutral-400">
+                          <p className="pb-6 pr-4 text-[14px] leading-relaxed text-neutral-400 md:pr-10">
                             {item.a}
                           </p>
                         </div>

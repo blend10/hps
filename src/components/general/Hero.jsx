@@ -105,7 +105,7 @@ const Hero = ({ variant = "home" }) => {
             <div className="relative px-5 py-3 md:px-7 md:py-4">
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-0 h-7 w-7 border-l-8 border-t-8 border-white md:h-10 md:w-10"
+                className="pointer-events-none absolute left-0 top-0 h-7 w-7 border-l-4 md:boder-l-8 border-t-4 md:border-t-8 border-white md:h-10 md:w-10"
               />
               <h2 className="text-center text-4xl font-medium tracking-tight text-white sm:text-5xl md:text-[90px]">
                 {variant === "motorsport" ? (
@@ -126,7 +126,7 @@ const Hero = ({ variant = "home" }) => {
               </h2>
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 right-0 h-7 w-7 border-b-8 border-r-8 border-white md:h-10 md:w-10"
+                className="pointer-events-none absolute bottom-0 right-0 h-7 w-7 border-b-4 md:border-b-8 border-r-4 md:border-r-8 border-white md:h-10 md:w-10"
               />
             </div>
           </div>

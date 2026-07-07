@@ -21,7 +21,7 @@ const Mission = ({
   return (
     <section
       aria-label={ariaLabel}
-      className="relative flex min-h-[720px] items-center justify-center overflow-hidden bg-black px-6 py-24 text-white"
+      className="relative flex min-h-105 items-center justify-center overflow-hidden bg-black px-6 py-20 text-white sm:min-h-135 sm:py-24 md:min-h-180"
     >
       {/* Background photo + darkening overlay */}
       <Image
@@ -36,10 +36,12 @@ const Mission = ({
 
       {/* Centred content */}
       <div className="relative flex flex-col items-center text-center">
-        {/* Heading with corner brackets (top-left + bottom-right). */}
-        <div className="relative inline-block px-4 py-2">
-          <span className="absolute left-0 top-0 h-8 w-8 border-l-6 border-t-6 border-white" />
-          <span className="absolute bottom-0 right-0 h-8 w-8 border-b-6 border-r-6 border-white" />
+        {/* Heading with corner brackets (top-left + bottom-right). The bracket
+            size/thickness scales up with the heading so it stays proportional on
+            phones; desktop (md+) keeps its original 32px / 6px marks. */}
+        <div className="relative inline-block px-3 py-2 sm:px-4">
+          <span className="absolute left-0 top-0 h-5 w-5 border-l-3 border-t-3 border-white sm:h-6 sm:w-6 sm:border-l-4 sm:border-t-4 md:h-8 md:w-8 md:border-l-6 md:border-t-6" />
+          <span className="absolute bottom-0 right-0 h-5 w-5 border-b-3 border-r-3 border-white sm:h-6 sm:w-6 sm:border-b-4 sm:border-r-4 md:h-8 md:w-8 md:border-b-6 md:border-r-6" />
           <h2 className="text-4xl font-medium tracking-tight sm:text-5xl md:text-[120px]">
             {heading}
           </h2>
@@ -47,7 +49,7 @@ const Mission = ({
 
         <a
           href={buttonHref}
-          className="mt-6 inline-block rounded-md bg-[#EF4123] px-16 py-3.5 text-md font-semibold uppercase tracking-tight text-black transition-colors hover:bg-[#e63417]"
+          className="mt-6 inline-block rounded-md bg-[#EF4123] px-10 py-3 text-md font-semibold uppercase tracking-tight text-black transition-colors hover:bg-[#e63417] sm:px-16 sm:py-3.5"
         >
           {buttonLabel}
         </a>
