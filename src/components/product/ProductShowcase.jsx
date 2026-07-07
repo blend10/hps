@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // "ProductShowcase" — a single, reusable product hero shared by the Riot,
 // Gladiator and Airborne pages.
@@ -88,15 +88,18 @@ export const PRODUCTS = {
   },
 };
 
-// One cell of the bottom bar. Cells after the first get a dashed left rule (a
-// top rule when the bar wraps to a single column on small screens).
-const Cell = ({ children, first, className = "" }) => (
+// One cell of the bottom bar. The dashed dividers between cells depend on how
+// the grid is arranged at each breakpoint, so each caller passes the exact
+// border classes for its position via `border`. Base padding + the shared
+// dashed colour live here.
+//
+// Grid tiers:
+//   • base  — 1 column, all cells stacked
+//   • sm    — name spans a full row, then colour / sizes / box in a 3-across row
+//   • lg    — the original single 4-column row
+const Cell = ({ children, border = "", className = "" }) => (
   <div
-    className={`px-6 py-6 md:px-8 ${
-      first
-        ? ""
-        : "border-t border-dashed border-white/25 md:border-l md:border-t-0"
-    } ${className}`}
+    className={`border-dashed border-white/25 px-6 py-6 md:px-8 ${border} ${className}`}
   >
     {children}
   </div>
@@ -107,6 +110,152 @@ const Label = ({ children }) => (
     {children}
   </span>
 );
+
+// Small check-mark used to flag the selected option in the size dropdown.
+const Check = ({ className = "" }) => (
+  <svg
+    viewBox="0 0 24 24"
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m5 12 5 5L20 7" />
+  </svg>
+);
+
+// Custom "Different Sizes" dropdown — a styled replacement for a native
+// <select>. A rounded trigger opens a floating glassy panel of options with
+// hover + selected states; closes on outside-click, Escape, or selection, and
+// supports arrow-key / Enter navigation.
+const SizeSelect = ({ options, value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  // Which option the keyboard is currently on (for arrow-key navigation).
+  const [activeIndex, setActiveIndex] = useState(value);
+  const rootRef = useRef(null);
+
+  // Close when clicking anywhere outside the control.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e) => {
+      if (rootRef.current && !rootRef.current.contains(e.target))
+        setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  const select = (i) => {
+    onChange(i);
+    setOpen(false);
+  };
+
+  // Open the panel, starting the keyboard highlight on the current selection.
+  const openPanel = () => {
+    setActiveIndex(value);
+    setOpen(true);
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") {
+      setOpen(false);
+      return;
+    }
+    if (
+      !open &&
+      (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ")
+    ) {
+      e.preventDefault();
+      openPanel();
+      return;
+    }
+    if (!open) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => (i + 1) % options.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => (i - 1 + options.length) % options.length);
+    } else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      select(activeIndex);
+    }
+  };
+
+  return (
+    <div ref={rootRef} className="relative mt-4">
+      <button
+        type="button"
+        onClick={() => (open ? setOpen(false) : openPanel())}
+        onKeyDown={onKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Select size"
+        className={`flex w-full items-center justify-between gap-2 rounded-xl border bg-white/5 py-2.5 pl-4 pr-3 text-left font-medium uppercase tracking-tight text-white backdrop-blur-sm transition-colors ${
+          open
+            ? "border-white/70 bg-white/10"
+            : "border-white/25 hover:border-white/50 hover:bg-white/10"
+        }`}
+      >
+        <span className="truncate">{options[value]}</span>
+        <svg
+          viewBox="0 0 24 24"
+          className={`h-4 w-4 shrink-0 text-white/70 transition-transform duration-300 ${
+            open ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      {/* Floating options panel. Kept mounted and animated via opacity/scale so
+          it fades rather than snapping; pointer-events are disabled while
+          closed so it never blocks the trigger. */}
+      <ul
+        role="listbox"
+        aria-label="Sizes"
+        className={`absolute left-0 right-0 top-full z-50 mt-2 origin-top overflow-hidden rounded-xl border border-white/15 bg-neutral-900/80 p-1 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out ${
+          open
+            ? "pointer-events-auto scale-100 opacity-100"
+            : "pointer-events-none scale-95 opacity-0"
+        }`}
+      >
+        {options.map((s, i) => {
+          const selected = i === value;
+          const active = i === activeIndex;
+          return (
+            <li key={s} role="option" aria-selected={selected}>
+              <button
+                type="button"
+                onClick={() => select(i)}
+                onMouseEnter={() => setActiveIndex(i)}
+                className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left font-medium uppercase tracking-tight transition-colors ${
+                  selected
+                    ? "text-[#EF4123]"
+                    : active
+                      ? "bg-white/10 text-white"
+                      : "text-neutral-300"
+                }`}
+              >
+                <span className="truncate">{s}</span>
+                {selected && <Check className="h-4 w-4 shrink-0" />}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
 
 // Images that should render horizontally mirrored (the source render faces the
 // "wrong" way). Matched by src so it applies to both the big view and its thumb.
@@ -137,8 +286,9 @@ const ProductShowcase = ({ product = "riot" }) => {
       />
 
       {/* Thumbnail gallery — a centered row near the top; the pressed thumb
-          renders into the big picture below. */}
-      <div className="relative flex justify-center gap-3 px-6 pt-24 md:pt-28">
+          renders into the big picture below. Wraps on small screens so
+          products with 5–6 thumbnails don't overflow the width. */}
+      <div className="relative flex flex-wrap justify-center gap-2 px-6 pt-50 md:flex-nowrap md:gap-3 md:pt-40 xl:pt-20">
         {data.images.map((src, i) => (
           <button
             key={src}
@@ -180,10 +330,11 @@ const ProductShowcase = ({ product = "riot" }) => {
       {/* Bottom bar — translucent dark, dashed-divided into four cells. */}
       <div className="px-4 pb-6 md:px-8 md:pb-8">
         <div className="mx-auto container rounded-md bg-[#0000004D] text-white shadow-2xl backdrop-blur-md">
-          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,2.2fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1.3fr)]">
-            {/* 1 — name + badge + contact + description */}
-            <Cell first>
-              <div className="flex items-start gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-[minmax(0,2.2fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1.3fr)]">
+            {/* 1 — name + badge + contact + description. Spans the full width up
+                to 1279px, then becomes the first column at xl. */}
+            <Cell className="sm:col-span-3 xl:col-span-1">
+              <div className="flex  items-start gap-3 md:flex-nowrap">
                 <h1 className="text-[22px] font-medium uppercase leading-[1.0] tracking-tight md:text-[50px]">
                   {data.name[0]}
                   <br />
@@ -194,11 +345,11 @@ const ProductShowcase = ({ product = "riot" }) => {
                   alt="HPS"
                   width={40}
                   height={40}
-                  className="mt-0.5 h-14 w-14 shrink-0"
+                  className="mt-0.5 h-11 w-11 shrink-0 md:h-14 md:w-14"
                 />
                 <Link
                   href="/contact"
-                  className="ml-auto shrink-0 rounded-lg bg-white px-6 py-3 text-[13px] font-bold uppercase tracking-tight text-[#EF4123] transition-colors hover:bg-neutral-100"
+                  className="  ml-auto shrink-0 rounded-lg bg-white px-6 py-3 text-[13px] font-bold uppercase tracking-tight text-[#EF4123] transition-colors hover:bg-neutral-100"
                 >
                   Contact us
                 </Link>
@@ -208,8 +359,9 @@ const ProductShowcase = ({ product = "riot" }) => {
               </p>
             </Cell>
 
-            {/* 2 — helmet colour */}
-            <Cell>
+            {/* 2 — helmet colour. Leftmost of the 3-across row (top rule only);
+                at xl it joins the single row with a left rule. */}
+            <Cell border="border-t xl:border-l xl:border-t-0">
               <Label>
                 Helmet
                 <br />
@@ -234,39 +386,27 @@ const ProductShowcase = ({ product = "riot" }) => {
               </div>
             </Cell>
 
-            {/* 3 — sizes */}
-            <Cell>
+            {/* 3 — sizes. Middle of the 3-across row (top + left rule), same at
+                xl. */}
+            <Cell border="border-t sm:border-l xl:border-t-0">
               <Label>
                 Different
                 <br />
                 Sizes
               </Label>
-              <div className="relative mt-4">
-                <select
-                  value={size}
-                  onChange={(e) => setSize(Number(e.target.value))}
-                  aria-label="Select size"
-                  className="w-full appearance-none rounded-sm border border-white/40 bg-transparent py-2 pl-3 pr-8  font-medium uppercase tracking-tight text-white outline-none focus:border-white"
-                >
-                  {data.sizes.map((s, i) => (
-                    <option key={s} value={i} className="text-black">
-                      {s}
-                    </option>
-                  ))}
-                </select>
-                <Image
-                  src="/arrowdown1.svg"
-                  alt=""
-                  width={12}
-                  height={12}
-                  aria-hidden="true"
-                  className="pointer-events-none absolute right-3 top-1/2 h-3 w-3 -translate-y-1/2 brightness-0 invert"
-                />
-              </div>
+              <SizeSelect
+                options={data.sizes}
+                value={size}
+                onChange={setSize}
+              />
             </Cell>
 
-            {/* 4 — in the box */}
-            <Cell className="flex items-center justify-between gap-3">
+            {/* 4 — in the box. Rightmost of the 3-across row (top + left rule),
+                same at xl. */}
+            <Cell
+              border="border-t sm:border-l xl:border-t-0"
+              className="flex items-center justify-between gap-3"
+            >
               <div className="text-right md:ml-auto">
                 <Label>
                   In the

@@ -232,15 +232,15 @@ const Origins = ({
                 className="flex min-h-[70vh] scroll-mt-32 flex-col justify-center py-16 md:py-[8vh] relative "
               >
                 <div className="absolute w-screen left-0 border-b border-l border-white/40 border-dashed inset-0 z-9999 bg-black"></div>
-                <h3 className="text-3xl font-medium tracking-tight md:text-4xl ml-10 z-9999">
+                <h3 className="text-3xl font-medium tracking-tight md:text-4xl ml-4 md:ml-10 z-9999">
                   {chapter.title}
                 </h3>
-                <p className="mt-5 max-w-2xl text-sm leading-relaxed text-neutral-400 md:text-base ml-10 z-9999">
+                <p className="mt-5 max-w-2xl text-sm leading-relaxed text-neutral-400 md:text-base ml-4 md:ml-10 z-9999">
                   {chapter.body}
                 </p>
 
                 <figure
-                  className="relative mt-8 overflow-hidden rounded-lg border border-white/10 bg-neutral-900 ml-10 z-9999"
+                  className="relative mt-8 overflow-hidden rounded-lg border border-white/10 bg-neutral-900 ml-4 md:ml-10 z-9999"
                   style={{ aspectRatio: chapter.aspect }}
                 >
                   {chapter.image ? (

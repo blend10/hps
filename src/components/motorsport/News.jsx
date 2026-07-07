@@ -129,28 +129,28 @@ const News = () => {
     <section className="bg-black text-white" aria-label="Latest News">
       <div className="mx-auto max-w-7xl px-6 py-16 md:px-8 md:py-24">
         {/* Header — title + prev/next controls */}
-        <div className="flex items-start justify-between gap-6">
+        <div className="flex items-start justify-between gap-4 md:gap-6">
           <h2 className="text-3xl font-medium tracking-tight md:text-[60px]">
             Latest News
           </h2>
-          <div className="flex shrink-0 gap-3">
+          <div className="flex shrink-0 gap-2 md:gap-3">
             <button
               type="button"
               onClick={() => scrollByCards(-1)}
               disabled={atStart}
               aria-label="Previous"
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-800 text-neutral-400 transition hover:bg-white hover:text-black disabled:opacity-40 disabled:hover:bg-neutral-800 disabled:hover:text-neutral-400"
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-800 text-neutral-400 transition hover:bg-white hover:text-black disabled:opacity-40 disabled:hover:bg-neutral-800 disabled:hover:text-neutral-400 md:h-14 md:w-14 md:rounded-2xl"
             >
-              <Arrow className="h-6 w-6 rotate-180" />
+              <Arrow className="h-5 w-5 rotate-180 md:h-6 md:w-6" />
             </button>
             <button
               type="button"
               onClick={() => scrollByCards(1)}
               disabled={atEnd}
               aria-label="Next"
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-800 text-neutral-400 transition hover:bg-white hover:text-black disabled:opacity-40 disabled:hover:bg-neutral-800 disabled:hover:text-neutral-400"
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-800 text-neutral-400 transition hover:bg-white hover:text-black disabled:opacity-40 disabled:hover:bg-neutral-800 disabled:hover:text-neutral-400 md:h-14 md:w-14 md:rounded-2xl"
             >
-              <Arrow className="h-6 w-6" />
+              <Arrow className="h-5 w-5 md:h-6 md:w-6" />
             </button>
           </div>
         </div>
@@ -159,7 +159,7 @@ const News = () => {
         <div
           role="tablist"
           aria-label="News categories"
-          className="mt-6 flex gap-8 border-b border-white/10"
+          className="mt-6 flex gap-4 overflow-x-auto border-b border-white/10 scrollbar-none [&::-webkit-scrollbar]:hidden md:gap-8 md:overflow-visible"
         >
           {tabs.map((tab) => {
             const isActive = tab === activeTab;
@@ -170,7 +170,7 @@ const News = () => {
                 role="tab"
                 aria-selected={isActive}
                 // Tabs are display-only for now — clicking does nothing.
-                className={`relative -mb-px pb-3 text-[30px] font-medium transition-colors ${
+                className={`relative -mb-px shrink-0 whitespace-nowrap pb-3 text-lg font-medium transition-colors md:text-[30px] ${
                   isActive
                     ? "text-white"
                     : "text-neutral-500 hover:text-neutral-300"
@@ -209,7 +209,7 @@ const News = () => {
                   <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-black/10" />
 
                   {/* Date badge */}
-                  <span className="absolute right-4 top-4 rounded-md bg-[#68686866] px-5 py-2  font-medium uppercase tracking-tight text-neutral-200 backdrop-blur-sm">
+                  <span className="absolute right-3 top-3 rounded-md bg-[#68686866] px-3 py-1.5 text-xs font-medium uppercase tracking-tight text-neutral-200 backdrop-blur-sm md:right-4 md:top-4 md:px-5 md:py-2 md:text-base">
                     {article.date}
                   </span>
 

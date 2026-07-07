@@ -56,21 +56,21 @@ body {
    prefers-reduced-motion so the hero snaps straight to its resting state. */
 @keyframes hpsHeroExpand {
   0% {
-    width: min(1000px, 92vw);
-    height: min(400px, 70vh);
+    width: var(--hero-open-w);
+    height: var(--hero-open-h);
     border-radius: 18px;
     opacity: 0;
   }
   8% {
-    width: min(1000px, 92vw);
-    height: min(400px, 70vh);
+    width: var(--hero-open-w);
+    height: var(--hero-open-h);
     border-radius: 18px;
     opacity: 1;
   }
   45% {
     /* Hold small and still for ~0.6s before the grow begins. */
-    width: min(1000px, 92vw);
-    height: min(400px, 70vh);
+    width: var(--hero-open-w);
+    height: var(--hero-open-h);
     border-radius: 18px;
     opacity: 1;
   }
@@ -112,8 +112,12 @@ body {
 }
 
 .hero-frame {
-  /* Resting state = fullscreen; the animation grows into this from 800×600.
-     Centred with a translate so the box expands from the middle outward. */
+  /* Resting state = fullscreen; the animation grows into this from the opening
+     frame. Centred with a translate so the box expands from the middle outward.
+     --hero-open-w/h drive the opening frame size (see @keyframes hpsHeroExpand);
+     defaults suit portrait phones and are overridden wider on landscape. */
+  --hero-open-w: 92vw;
+  --hero-open-h: 52vh;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -125,13 +129,21 @@ body {
   animation: hpsHeroExpand 1.7s cubic-bezier(0.65, 0, 0.35, 1) both;
   will-change: width, height;
 }
-/* The source video is 16:9. On portrait viewports that ratio is much wider
-   than the container, so object-cover zooms in hard and crops most of the
-   frame out. Switch to contain there — the section (bg-black) letterboxes
-   the video instead of cutting it off. */
+/* Landscape / larger screens keep the original 1000×400 opening frame. */
+@media (orientation: landscape), (min-width: 768px) {
+  .hero-frame {
+    --hero-open-w: min(1000px, 92vw);
+    --hero-open-h: min(400px, 70vh);
+  }
+}
+/* The source video is 16:9. On portrait viewports we keep object-cover so the
+   video fills the whole frame edge-to-edge (no letterbox bars) — this makes the
+   expanding-frame reveal read far better on mobile. object-position centres the
+   crop so the subject stays framed while the sides are trimmed. */
 @media (orientation: portrait) {
   .hero-frame video {
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
   }
 }
 .hero-reveal {

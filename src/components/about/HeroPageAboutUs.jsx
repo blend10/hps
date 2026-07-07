@@ -25,8 +25,8 @@ const Panel = ({ label, image, video, priority }) => {
   const videoRef = useRef(null);
   const [active, setActive] = useState(false);
 
-  const enter = () => {
-    setActive(true);
+  // Start playing the muted, looping clip.
+  const play = () => {
     const v = videoRef.current;
     if (!v) return;
     v.muted = true;
@@ -35,12 +35,35 @@ const Panel = ({ label, image, video, priority }) => {
     if (started && typeof started.catch === "function") started.catch(() => {});
   };
 
-  const leave = () => {
-    setActive(false);
+  // Pause and rewind so the still shows again next time.
+  const stop = () => {
     const v = videoRef.current;
     if (!v) return;
     v.pause();
     v.currentTime = 0;
+  };
+
+  const enter = () => {
+    setActive(true);
+    play();
+  };
+
+  const leave = () => {
+    setActive(false);
+    stop();
+  };
+
+  // Click / tap toggles the panel. This is what makes it work on touch
+  // devices, where there is no hover to trigger `enter`/`leave`. On a mouse,
+  // hover already handles activation, so a click there would just flicker the
+  // effect off — hence we only toggle for non-hover (touch/pen) pointers.
+  const handleClick = (e) => {
+    if (e.nativeEvent?.pointerType === "mouse") return;
+    setActive((wasActive) => {
+      if (wasActive) stop();
+      else play();
+      return !wasActive;
+    });
   };
 
   return (
@@ -49,9 +72,11 @@ const Panel = ({ label, image, video, priority }) => {
       onMouseLeave={leave}
       onFocus={enter}
       onBlur={leave}
+      onClick={handleClick}
       tabIndex={0}
       role="button"
       aria-label={label}
+      aria-pressed={active}
       className="group relative h-full flex-1 cursor-pointer overflow-hidden bg-black outline-none focus-visible:ring-2 focus-visible:ring-white/60"
     >
       {/* Still image: grayscale at rest, full colour when active. */}
@@ -60,7 +85,7 @@ const Panel = ({ label, image, video, priority }) => {
         alt={label}
         fill
         priority={priority}
-        sizes="25vw"
+        sizes="(min-width: 640px) 25vw, 50vw"
         className={`object-cover transition-[filter,transform] duration-500 ease-out ${
           active ? "grayscale-0 scale-105" : "grayscale scale-100 brightness-90"
         }`}
@@ -106,8 +131,9 @@ const HeroPageAboutUs = () => {
   return (
     <section className="relative h-svh min-h-140 w-full bg-black">
       {/* Panel row — clips the grayscale/colour panels to the section, while
-          leaving the overhanging card free to spill below (see below). */}
-      <div className="flex h-full w-full flex-col overflow-hidden sm:flex-row">
+          leaving the overhanging card free to spill below (see below). On
+          mobile the four panels form a 2×2 grid; from sm+ they sit in a row. */}
+      <div className="grid h-full w-full grid-cols-2 grid-rows-2 overflow-hidden sm:flex sm:flex-row">
         {PANELS.map((panel, i) => (
           <Panel key={panel.label} {...panel} priority={i === 0} />
         ))}
