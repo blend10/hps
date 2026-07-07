@@ -1,8 +1,11 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
+import FullWidthRule from "@/components/general/FullWidthRule";
 
+// Server Component: this is a pure data-to-markup renderer over the static
+// PRODUCT_DETAILS map — no state, effects, or handlers — so it ships zero
+// client JS.
+//
 // "ProductDetails" — the long-form spec section that sits under the
 // ProductShowcase hero on each product page. Same data-driven logic as
 // ProductShowcase: the layout is fixed and only the copy + images change,
@@ -113,13 +116,6 @@ const SectionLabel = ({
   >
     {children}
   </span>
-);
-
-// A dashed horizontal rule that breaks out of the centered content container to
-// span the full page width. It lives inside the max-w container but stretches
-// to 100vw via a centered full-viewport-width box.
-const FullWidthRule = () => (
-  <div className="relative left-1/2 w-screen -translate-x-1/2 border-t border-dashed border-white/20" />
 );
 
 const ProductDetails = ({ product = "riot" }) => {

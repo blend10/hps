@@ -52,7 +52,10 @@ const Hero = ({ variant = "home" }) => {
           muted
           loop
           playsInline
-          preload="auto"
+          // preload="none": the poster paints immediately as the LCP element,
+          // and the large decorative MP4 streams in after, rather than blocking
+          // first paint by eagerly downloading the whole file.
+          preload="none"
           aria-hidden="true"
         >
           <source

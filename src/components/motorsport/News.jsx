@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Arrow, Chevron, NEWS_TABS as tabs } from "./newsShared";
 
 // "Latest News" — a filterable, horizontally-scrolling news carousel.
 //
@@ -12,8 +13,6 @@ import { useEffect, useRef, useState } from "react";
 // how far through the row the reader has scrolled.
 //
 // Images reuse the /public photos as stand-ins — swap `image` per item.
-
-const tabs = ["HPS Show", "Press Release", "Events"];
 
 // Number of segments in the dashed scroll-progress bar.
 const DASHES = 40;
@@ -54,37 +53,6 @@ const articles = {
     },
   ],
 };
-
-const Chevron = ({ className = "" }) => (
-  <svg
-    viewBox="0 0 24 24"
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="m9 6 6 6-6 6" />
-  </svg>
-);
-
-// Full arrow (tail + head) used by the prev/next carousel controls.
-const Arrow = ({ className = "" }) => (
-  <svg
-    viewBox="0 0 24 24"
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M5 12h14M13 6l6 6-6 6" />
-  </svg>
-);
 
 const News = () => {
   // Tabs are display-only for now, so the active tab is fixed to the first one.
@@ -155,32 +123,27 @@ const News = () => {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div
-          role="tablist"
-          aria-label="News categories"
-          className="mt-6 flex gap-4 overflow-x-auto border-b border-white/10 scrollbar-none [&::-webkit-scrollbar]:hidden md:gap-8 md:overflow-visible"
-        >
+        {/* Category labels. These are display-only on the homepage (only the
+            active category has content here), so they are rendered as plain
+            static labels rather than ARIA tabs — announcing non-functional
+            role="tab" controls to assistive tech would be misleading. The full
+            interactive tabs live on the /news page (LatestNews). */}
+        <div className="mt-6 flex gap-4 overflow-x-auto border-b border-white/10 scrollbar-none [&::-webkit-scrollbar]:hidden md:gap-8 md:overflow-visible">
           {tabs.map((tab) => {
             const isActive = tab === activeTab;
             return (
-              <button
+              <span
                 key={tab}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                // Tabs are display-only for now — clicking does nothing.
-                className={`relative -mb-px shrink-0 whitespace-nowrap pb-3 text-lg font-medium transition-colors md:text-[30px] ${
-                  isActive
-                    ? "text-white"
-                    : "text-neutral-500 hover:text-neutral-300"
+                aria-current={isActive ? "true" : undefined}
+                className={`relative -mb-px shrink-0 whitespace-nowrap pb-3 text-lg font-medium md:text-[30px] ${
+                  isActive ? "text-white" : "text-neutral-500"
                 }`}
               >
                 {tab}
                 {isActive && (
                   <span className="absolute inset-x-0 bottom-0 h-0.5 bg-white" />
                 )}
-              </button>
+              </span>
             );
           })}
         </div>

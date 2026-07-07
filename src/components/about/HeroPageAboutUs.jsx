@@ -1,15 +1,14 @@
-"use client";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import HeroPanel from "./HeroPanel";
 
-// Four full-height panels shown side-by-side. Each sits desaturated
-// (grayscale) at rest; on hover it blooms to full colour and a muted,
-// looping video fades in over the still image and plays. Leaving the panel
-// pauses + rewinds the video and drops it back to greyscale.
+// About-Us hero. The interactive grayscale/colour video panels are the only
+// client-side piece and live in ./HeroPanel ("use client"); this shell — the
+// panel grid wiring, gradient, overhanging card, headline and brand-logo row —
+// is a Server Component and ships no client JS.
 //
-// Assets (add these to /public — the component is wired to these paths):
-//   images: /about/panel1.png … panel4.png   (the still shown at rest, also the video poster)
-//   videos: /videos/about1.mp4 … about4.mp4   (plays on hover)
+// Panel assets (add to /public — HeroPanel is wired to these paths):
+//   images: /item1.png … item4.png   (the still shown at rest, also the video poster)
+//   videos: /videos/videoItem1.mp4 … videoItem4.mp4   (plays on hover)
 const PANELS = [
   { label: "Motorsport", image: "/item1.png", video: "/videos/videoItem1.mp4" },
   { label: "Aviation", image: "/item2.png", video: "/videos/videoItem2.mp4" },
@@ -21,110 +20,12 @@ const PANELS = [
   },
 ];
 
-const Panel = ({ label, image, video, priority }) => {
-  const videoRef = useRef(null);
-  const [active, setActive] = useState(false);
-
-  // Start playing the muted, looping clip.
-  const play = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    const started = v.play();
-    // Browsers reject play() when autoplay is disallowed — swallow it.
-    if (started && typeof started.catch === "function") started.catch(() => {});
-  };
-
-  // Pause and rewind so the still shows again next time.
-  const stop = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.pause();
-    v.currentTime = 0;
-  };
-
-  const enter = () => {
-    setActive(true);
-    play();
-  };
-
-  const leave = () => {
-    setActive(false);
-    stop();
-  };
-
-  // Click / tap toggles the panel. This is what makes it work on touch
-  // devices, where there is no hover to trigger `enter`/`leave`. On a mouse,
-  // hover already handles activation, so a click there would just flicker the
-  // effect off — hence we only toggle for non-hover (touch/pen) pointers.
-  const handleClick = (e) => {
-    if (e.nativeEvent?.pointerType === "mouse") return;
-    setActive((wasActive) => {
-      if (wasActive) stop();
-      else play();
-      return !wasActive;
-    });
-  };
-
-  return (
-    <div
-      onMouseEnter={enter}
-      onMouseLeave={leave}
-      onFocus={enter}
-      onBlur={leave}
-      onClick={handleClick}
-      tabIndex={0}
-      role="button"
-      aria-label={label}
-      aria-pressed={active}
-      className="group relative h-full flex-1 cursor-pointer overflow-hidden bg-black outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-    >
-      {/* Still image: grayscale at rest, full colour when active. */}
-      <Image
-        src={image}
-        alt={label}
-        fill
-        priority={priority}
-        sizes="(min-width: 640px) 25vw, 50vw"
-        className={`object-cover transition-[filter,transform] duration-500 ease-out ${
-          active ? "grayscale-0 scale-105" : "grayscale scale-100 brightness-90"
-        }`}
-      />
-
-      {/* Video: fades in over the still and plays on hover. */}
-      <video
-        ref={videoRef}
-        poster={image}
-        muted
-        loop
-        playsInline
-        preload="none"
-        aria-hidden="true"
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
-          active ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <source src={video} type="video/mp4" />
-      </video>
-
-      {/* Bottom scrim so the label stays legible over any frame. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/70 to-transparent"
-      />
-
-      {/* Label */}
-    </div>
-  );
-};
-
-// Brand logos shown in the card. Add these to /public (drop-in, like the
-// panels): /about/brand1.svg … brand4.svg
+// Brand logos shown in the card.
 const BRANDS = [
   { name: "OMP", logo: "/headerLogo1.svg" },
   { name: "Bell", logo: "/headerLogo2.svg" },
   { name: "ZN", logo: "/headerLogo3.svg" },
-  { name: "Racing Spirit", logo: "/headeLogo4.svg" },
+  { name: "Racing Spirit", logo: "/HeadeLogo4.svg" },
 ];
 
 const HeroPageAboutUs = () => {
@@ -135,7 +36,7 @@ const HeroPageAboutUs = () => {
           mobile the four panels form a 2×2 grid; from sm+ they sit in a row. */}
       <div className="grid h-full w-full grid-cols-2 grid-rows-2 overflow-hidden sm:flex sm:flex-row">
         {PANELS.map((panel, i) => (
-          <Panel key={panel.label} {...panel} priority={i === 0} />
+          <HeroPanel key={panel.label} {...panel} priority={i === 0} />
         ))}
       </div>
 
@@ -154,13 +55,14 @@ const HeroPageAboutUs = () => {
             <div className="flex items-center gap-3">
               <Image
                 src="/arrowdown1.svg"
-                alt="Scroll down"
+                alt=""
+                aria-hidden="true"
                 width={15}
                 height={15}
                 className="animate-bounce"
               />
               <span className="font-medium uppercase tracking-tight text-[#EF4123]">
-                SCROLL TO EXPLORE
+                SCROLL TO EXPLORE
               </span>
             </div>
 

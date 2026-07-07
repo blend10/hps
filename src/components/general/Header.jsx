@@ -6,26 +6,27 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Products shown in the header hover menu — image + short blurb per system.
+// hrefs map to the real product routes under src/app/product/*.
 const productMenu = [
   {
     title: "RIOT",
     description:
       "The RH1.0 is a high-end head protection for crowd control application.",
     image: "/helmet1.png",
-    href: "/products/riot-helmet",
+    href: "/product/riot",
   },
   {
     title: "Gladiator",
     description: "The GLADIATOR is the newest generation of SWAT-helmets.",
     image: "/helmet2.png",
-    href: "/products/gladiator",
+    href: "/product/gladiator",
   },
   {
     title: "Lift Airborne AV2.2",
     description:
       "Designed for airborne forces, combat aviators, and special operations pilots.",
     image: "/helmet3.png",
-    href: "/products/lift-airborne",
+    href: "/product/airborne",
   },
 ];
 
@@ -33,29 +34,40 @@ const productMenu = [
 // three columns on the first row (HPS · Products · Our Technology) and a second
 // row where Latest News spans two columns (its links flow inline) with Contact
 // Us in the third. `span2`/`inline` drive that layout per section.
+// hrefs point at the real routes under src/app/*. Links whose destination page
+// does not exist yet are marked `disabled` — they render as non-clickable
+// labels until the page is built (see the mega-menu render below).
 const menuSections = [
   {
     title: "HPS",
     links: [
-      { label: "About Us", href: "/about" },
-      { label: "Motorsport Heritage", href: "/heritage" },
-      { label: "Careers", href: "/careers" },
+      { label: "About Us", href: "/aboutUs" },
+      { label: "Motorsport Heritage", href: "/motorsportHeritage" },
+      { label: "Careers", href: "/company" },
     ],
   },
   {
     title: "Products",
     links: [
-      { label: "Gladiator", href: "/products/gladiator" },
-      { label: "Riot Helmet 1.0", href: "/products/riot-helmet" },
-      { label: "Lift Airborne AV2.2", href: "/products/lift-airborne" },
+      { label: "Gladiator", href: "/product/gladiator" },
+      { label: "Riot Helmet 1.0", href: "/product/riot" },
+      { label: "Lift Airborne AV2.2", href: "/product/airborne" },
     ],
   },
   {
     title: "Our Technology",
     links: [
-      { label: "Certifications & Standards", href: "/technology/certifications" },
-      { label: "R&D and Testing", href: "/technology/research" },
-      { label: "Impact Absorption", href: "/technology/impact-absorption" },
+      {
+        label: "Certifications & Standards",
+        href: "/technology/certifications",
+        disabled: true,
+      },
+      { label: "R&D and Testing", href: "/technology/research", disabled: true },
+      {
+        label: "Impact Absorption",
+        href: "/technology/impact-absorption",
+        disabled: true,
+      },
     ],
   },
   {
@@ -63,9 +75,9 @@ const menuSections = [
     span2: true,
     inline: true,
     links: [
-      { label: "HPS Show", href: "/news/hps-show" },
-      { label: "Press Release", href: "/news/press-release" },
-      { label: "Events", href: "/news/events" },
+      { label: "HPS Show", href: "/news/hps-show", disabled: true },
+      { label: "Press Release", href: "/news/press-release", disabled: true },
+      { label: "Events", href: "/news/events", disabled: true },
     ],
   },
   {
@@ -99,6 +111,12 @@ const Header = () => {
   // the container, the brand mark returns on the left, buttons stay on the right.
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Selected language. i18n itself is not wired yet, but the selector is a real
+  // control: choosing an option updates the active state so keyboard/AT users
+  // get feedback instead of pressing dead buttons. Swap this for a router
+  // locale switch once localisation lands.
+  const [lang, setLang] = useState("English");
+
   // Either full-width panel (products cards or the hamburger nav) puts the pill
   // into its wide, container-spanning layout.
   const wide = expanded || menuOpen;
@@ -124,7 +142,7 @@ const Header = () => {
       {/* Top strip: parent group + sister brands */}
       <div className="pointer-events-auto bg-black border-b border-white/5">
         <div className="mx-auto flex h-[60px] container items-center justify-between px-6 text-[11px] md:px-8">
-          <span className="text-[#474747] font-medium text-[16px]">
+          <span className="text-[#8a8a8a] font-medium text-[16px]">
             A brand of Racing Force
           </span>
 
@@ -155,8 +173,8 @@ const Header = () => {
             />
             <span className="h-6 w-px bg-neutral-600" />
             <Image
-              src="/headeLogo4.svg"
-              alt="Zeronoise"
+              src="/HeadeLogo4.svg"
+              alt="Racing Spirit"
               width={70}
               height={24}
               className="h-6 w-auto"
@@ -174,9 +192,12 @@ const Header = () => {
           }`}
           aria-label="High Protection Systems — home"
         >
-          <img
+          <Image
             src="/hpsFooterLogo.svg"
             alt="High Protection Systems"
+            width={136}
+            height={87}
+            priority
             className="h-14 w-auto"
           />
           <span className="h-12 w-px bg-neutral-600" />
@@ -196,10 +217,10 @@ const Header = () => {
             and the products lay out as side-by-side cards. */}
         <div
           onMouseLeave={() => setLangOpen(false)}
-          className={`pointer-events-auto group/products rounded-xl bg-[#19191999] backdrop-blur-2xl p-2 ${
+          className={`pointer-events-auto group/products rounded-xl p-2 transition-[background-color,backdrop-filter] duration-300 ${
             wide
-              ? "absolute inset-x-6 top-4 z-10 md:inset-x-8"
-              : "relative w-max"
+              ? "absolute inset-x-6 top-4 z-10 bg-[#191919e6] backdrop-blur-3xl backdrop-saturate-150 md:inset-x-8"
+              : "relative w-max bg-[#19191999] backdrop-blur-2xl"
           }`}
         >
           <div
@@ -269,11 +290,16 @@ const Header = () => {
                 </button>
               )}
               <div className="flex items-center gap-2">
-                <Link
-                  href="/"
-                  onMouseEnter={() => setLangOpen(false)}
+                <button
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded={productsHovered}
+                  onMouseEnter={() => {
+                    setProductsHovered(true);
+                    setLangOpen(false);
+                  }}
                   onClick={() => {
-                    setProductsHovered(!productsHovered);
+                    setProductsHovered((open) => !open);
                     setExpanded(false);
                     setLangOpen(false);
                     setMenuOpen(false);
@@ -285,7 +311,7 @@ const Header = () => {
                   }`}
                 >
                   Products
-                </Link>
+                </button>
 
                 <button
                   type="button"
@@ -452,28 +478,35 @@ const Header = () => {
             }`}
           >
             <div className="overflow-hidden relative">
-              {/* <div className="absolute inset-0"></div> */}
-              <div className="px-1 pt-2">
+              <ul role="listbox" aria-label="Language" className="px-1 pt-2">
                 {[
-                  { label: "English Language", active: true },
-                  { label: "Arabic Language", active: false },
-                  { label: "German Language", active: false },
-                ].map((lang, i) => (
-                  <button
-                    key={lang.label}
-                    type="button"
-                    className={`block w-full px-3 py-3 text-center text-[13px] transition-colors ${
-                      i > 0 ? "border-t border-white/10" : ""
-                    } ${
-                      lang.active
-                        ? "text-[#EF4123]"
-                        : "text-white hover:bg-white/5"
-                    }`}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
-              </div>
+                  { code: "English", label: "English Language" },
+                  { code: "Arabic", label: "Arabic Language" },
+                  { code: "German", label: "German Language" },
+                ].map((option, i) => {
+                  const active = option.code === lang;
+                  return (
+                    <li key={option.code} role="option" aria-selected={active}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLang(option.code);
+                          setLangOpen(false);
+                        }}
+                        className={`block w-full px-3 py-3 text-center text-[13px] transition-colors ${
+                          i > 0 ? "border-t border-white/10" : ""
+                        } ${
+                          active
+                            ? "text-[#EF4123]"
+                            : "text-white hover:bg-white/5"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </div>
 
@@ -537,17 +570,31 @@ const Header = () => {
                             : "flex flex-col gap-2.5"
                         }
                       >
-                        {section.links.map((link) => (
-                          <li key={link.label}>
-                            <Link
-                              href={link.href}
-                              onClick={() => setMenuOpen(false)}
-                              className="text-[14px] leading-tight text-neutral-200 transition-colors hover:text-white"
-                            >
-                              {link.label}
-                            </Link>
-                          </li>
-                        ))}
+                        {section.links.map((link) =>
+                          link.disabled ? (
+                            // Page not built yet — show the label but make it
+                            // non-clickable (dimmed, no navigation).
+                            <li key={link.label}>
+                              <span
+                                aria-disabled="true"
+                                title="Coming soon"
+                                className="cursor-not-allowed text-[14px] leading-tight text-neutral-500"
+                              >
+                                {link.label}
+                              </span>
+                            </li>
+                          ) : (
+                            <li key={link.label}>
+                              <Link
+                                href={link.href}
+                                onClick={() => setMenuOpen(false)}
+                                className="text-[14px] leading-tight text-neutral-200 transition-colors hover:text-white"
+                              >
+                                {link.label}
+                              </Link>
+                            </li>
+                          )
+                        )}
                       </ul>
                     </div>
                   ))}

@@ -3,7 +3,14 @@ import Helmets from "@/components/motorsport/Helmets";
 import News from "@/components/motorsport/News";
 import Origins from "@/components/motorsport/Origins";
 import Ultimate from "@/components/motorsport/Ultimate";
-import React from "react";
+
+export const metadata = {
+  title: "Company Overview",
+  description:
+    "Who HPS is, where we're based, and the industries we serve — a manufacturer of high-performance ballistic and blast-protective equipment.",
+  alternates: { canonical: "/company" },
+  openGraph: { title: "Company Overview | High Protection Systems", url: "/company" },
+};
 
 // Content for the company / About Us section — passed into the reusable
 // <Origins> layout as props. Omit `image` on a chapter to render the on-brand

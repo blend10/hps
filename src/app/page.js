@@ -1,5 +1,4 @@
 import Hero from "@/components/general/Hero";
-// import Cards from "@/components/general/Cards";
 import Helmets from "@/components/motorsport/Helmets";
 import News from "@/components/motorsport/News";
 import Ultimate from "@/components/motorsport/Ultimate";
@@ -11,6 +10,13 @@ import Mission from "@/components/home/Mission";
 export default function Home() {
   return (
     <main className="flex-1">
+      {/* Visually-hidden document-level heading: the hero's large type is an
+          <h2> for design reasons, so this gives the page a proper <h1> for SEO
+          and the accessibility outline without altering the visual design. */}
+      <h1 className="sr-only">
+        High Protection Systems — Ballistic and Tactical Helmets for Military,
+        Law Enforcement, and Aviation
+      </h1>
       <Hero />
       <ScrollEffect />
       <High />

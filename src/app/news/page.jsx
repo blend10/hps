@@ -2,7 +2,14 @@ import Mission from "@/components/home/Mission";
 import Helmets from "@/components/motorsport/Helmets";
 import LatestNews from "@/components/motorsport/LatestNews";
 import Ultimate from "@/components/motorsport/Ultimate";
-import React from "react";
+
+export const metadata = {
+  title: "Latest News",
+  description:
+    "News, press releases, and events from High Protection Systems — including our presence at global defence exhibitions.",
+  alternates: { canonical: "/news" },
+  openGraph: { title: "Latest News | High Protection Systems", url: "/news" },
+};
 
 const Page = () => {
   return (

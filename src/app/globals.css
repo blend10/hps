@@ -1,30 +1,9 @@
 @import "tailwindcss";
 
-/* Neue Montreal — self-hosted from /public/fonts (see public/fonts/README.md).
-   Absolute /fonts/... URLs are served from the public folder and are NOT resolved
-   at build time, so a missing file just falls back to the next font in the stack
-   instead of breaking the build. */
-@font-face {
-  font-family: "Neue Montreal";
-  src: url("/fonts/NeueMontreal-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Neue Montreal";
-  src: url("/fonts/NeueMontreal-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Neue Montreal";
-  src: url("/fonts/NeueMontreal-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* Fonts are loaded and optimised via next/font (see src/app/layout.js), which
+   sets the --font-sans CSS variable on <html>. To restore Neue Montreal, swap
+   the next/font/google import for next/font/local pointing at the woff2 files
+   in public/fonts (see public/fonts/README.md) — no change needed here. */
 
 :root {
   --background: #ffffff;
@@ -34,7 +13,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Neue Montreal", Arial, Helvetica, sans-serif;
+  /* --font-sans is provided by next/font; fall back to system sans if unset. */
+  --font-sans: var(--font-sans, ui-sans-serif, system-ui, Arial, sans-serif);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,6 +28,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* Global focus-visible baseline (WCAG 2.4.7). Many interactive controls use
+   outline-none; this restores a clearly visible, brand-coloured focus ring for
+   keyboard users across the whole app without affecting mouse interaction. */
+:focus-visible {
+  outline: 2px solid #ef4123;
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* --- Hero "opening" reveal (see components/general/Hero.jsx) --------------

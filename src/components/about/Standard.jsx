@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 // (and un-mutes to colour). Corner brackets frame the whole block.
 //
 // Asset (wired to an existing file — swap if you have a dedicated clip):
-//   video: /videos/hero.mp4   (poster: /videos/hero-poster.jpg)
+//   video: /videos/video222.mp4   (poster: /video222.png)
 const Standard = () => {
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);

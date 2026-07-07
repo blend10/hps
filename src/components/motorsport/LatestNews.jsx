@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import { Arrow, NewsCard, NEWS_TABS as tabs } from "./newsShared";
 
 // "Latest News" — a paginated 2-column grid of news cards.
 //
@@ -13,8 +13,6 @@ import { useState } from "react";
 // a paged grid instead of a horizontal scroller.
 //
 // Images reuse the /public photos as stand-ins — swap `image` per item.
-
-const tabs = ["HPS Show", "Press Release", "Events"];
 
 // Cards shown per page (2 columns × 3 rows).
 const PER_PAGE = 6;
@@ -102,85 +100,6 @@ const articles = {
   ],
 };
 
-const Chevron = ({ className = "" }) => (
-  <svg
-    viewBox="0 0 24 24"
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="m9 6 6 6-6 6" />
-  </svg>
-);
-
-// Full arrow (tail + head) used by the prev/next pagination controls.
-const Arrow = ({ className = "" }) => (
-  <svg
-    viewBox="0 0 24 24"
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M5 12h14M13 6l6 6-6 6" />
-  </svg>
-);
-
-const NewsCard = ({ article }) => (
-  <div className="group relative overflow-hidden rounded-xl">
-    <div className="relative aspect-16/10">
-      <Image
-        src={article.image}
-        alt={article.title}
-        fill
-        className="object-cover transition duration-500 group-hover:scale-105"
-        sizes="(min-width: 640px) 520px, 100vw"
-      />
-      {/* Bottom gradient for legible overlay text */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-black/10" />
-
-      {/* Date badge */}
-      <span className="absolute right-4 top-4 rounded-md bg-[#68686866] px-5 py-2 font-medium uppercase tracking-tight text-neutral-200 backdrop-blur-sm">
-        {article.date}
-      </span>
-
-      {/* Chevron */}
-      <span className="absolute bottom-5 right-5 z-10 flex h-10 w-10 items-center justify-center">
-        <Chevron className="h-8 w-8" />
-      </span>
-
-      {/* Backdrop blur, fading from blurred (bottom) to clear (top). */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 backdrop-blur-md"
-        style={{
-          maskImage: "linear-gradient(to top, black 40%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to top, black 40%, transparent 100%)",
-        }}
-      />
-
-      {/* Title + excerpt */}
-      <div className="absolute inset-x-5 bottom-5 pr-14">
-        <h3 className="text-lg font-semibold uppercase tracking-[0.08em] md:text-xl">
-          {article.title}
-        </h3>
-        {article.excerpt && (
-          <p className="mt-1.5 max-w-lg text-xs leading-relaxed text-neutral-300 md:text-sm">
-            {article.excerpt}
-          </p>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
 const LatestNews = () => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [page, setPage] = useState(0);
@@ -227,12 +146,16 @@ const LatestNews = () => {
         >
           {tabs.map((tab) => {
             const isActive = tab === activeTab;
+            const slug = tab.toLowerCase().replace(/\s+/g, "-");
             return (
               <button
                 key={tab}
                 type="button"
                 role="tab"
+                id={`news-tab-${slug}`}
                 aria-selected={isActive}
+                aria-controls="news-tabpanel"
+                tabIndex={isActive ? 0 : -1}
                 onClick={() => selectTab(tab)}
                 className={`relative -mb-px pb-3 text-base font-medium transition-colors md:text-lg ${
                   isActive
@@ -249,10 +172,19 @@ const LatestNews = () => {
           })}
         </div>
 
-        {/* Grid */}
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {/* Grid — the tabpanel for the active category. */}
+        <div
+          id="news-tabpanel"
+          role="tabpanel"
+          aria-label={`${activeTab} news`}
+          className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2"
+        >
           {pageItems.map((article) => (
-            <NewsCard key={article.id} article={article} />
+            <NewsCard
+              key={article.id}
+              article={article}
+              sizes="(min-width: 640px) 520px, 100vw"
+            />
           ))}
         </div>
 

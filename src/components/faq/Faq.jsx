@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import FullWidthRule from "@/components/general/FullWidthRule";
 
 // "Faq" — a two-column FAQ. Left: a bracketed title and a sticky category
 // index (— CONTACT & PROCUREMENT highlights the active one). Right: the active
@@ -9,9 +10,6 @@ import { useState } from "react";
 // Fully data-driven: everything lives in FAQ_CATEGORIES. Add a category or a
 // Q&A pair and both the left index and the right panel update with no layout
 // change.
-const FullWidthRule = () => (
-  <div className="relative left-1/2 w-screen -translate-x-1/2 border-t border-dashed border-white/20" />
-);
 export const FAQ_CATEGORIES = [
   {
     id: "about",
@@ -145,7 +143,7 @@ const Faq = () => {
                 <br />
                 Asked
                 <br />
-                Qestions
+                Questions
               </h2>
               <span
                 aria-hidden="true"

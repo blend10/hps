@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import FullWidthRule from "@/components/general/FullWidthRule";
 
 // "Contact" — the "Get In Touch" enquiry form. A centered, single-column form
 // on black with orange (#EF4123) accents, matching the HPS contact mock:
@@ -22,17 +23,11 @@ const IDENTIFY_OPTIONS = [
   "Other",
 ];
 
-// A dashed horizontal rule that breaks out of the centered container to span
-// the full page width.
-const FullWidthRule = () => (
-  <div className="relative left-1/2 w-screen -translate-x-1/2 border-t border-dashed border-white/20" />
-);
-
 // Small uppercase field label used above every input.
 const FieldLabel = ({ htmlFor, children }) => (
   <label
     htmlFor={htmlFor}
-    className="mb-2 block text-[14px] tracking-tight font-medium uppercase tracking-[0.12em] text-neutral-300"
+    className="mb-2 block text-[14px] font-medium uppercase tracking-[0.12em] text-neutral-300"
   >
     {children}
   </label>
@@ -216,8 +211,12 @@ const Contact = () => {
         <FullWidthRule />
 
         {submitted ? (
-          /* Success state. */
-          <div className="mt-14 rounded-md border border-[#EF4123]/40 bg-[#2a2a2a] px-6 py-10 text-center">
+          /* Success state — role="status" so assistive tech announces it. */
+          <div
+            role="status"
+            aria-live="polite"
+            className="mt-14 rounded-md border border-[#EF4123]/40 bg-[#2a2a2a] px-6 py-10 text-center"
+          >
             <p className="text-lg font-medium">
               Thank you — your enquiry has been received.
             </p>
@@ -336,18 +335,14 @@ const Contact = () => {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <FieldLabel htmlFor="files">Add Additional Files</FieldLabel>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-[11px] font-semibold uppercase tracking-tight text-[#EF4123] hover:underline"
-                >
-                  + Required
-                </button>
+                <span className="text-[11px] font-semibold uppercase tracking-tight text-neutral-500">
+                  Optional
+                </span>
               </div>
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex w-full bg-[#474747] flex-col items-center justify-center gap-3 rounded-md border border-dashed border-white/25 bg-[#2a2a2a] px-6 py-12 text-center transition-colors hover:border-[#EF4123]/60"
+                className="flex w-full flex-col items-center justify-center gap-3 rounded-md border border-dashed border-white/25 bg-[#2a2a2a] px-6 py-12 text-center transition-colors hover:border-[#EF4123]/60"
               >
                 <div className="flex flex-col items-center justify-center gap-3 bg-[#535353] p-5">
                   {" "}
@@ -357,7 +352,7 @@ const Contact = () => {
                     width={80}
                     height={80}
                     aria-hidden="true"
-                    className="h-[80px] w-[80px] brightness-80 invert"
+                    className="h-20 w-20 brightness-80 invert"
                   />
                   <span className="text-[16px] font-semibold uppercase tracking-tight text-neutral-400">
                     {files.length > 0

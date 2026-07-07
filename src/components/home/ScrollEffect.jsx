@@ -29,11 +29,13 @@ const thumbs = [
   { id: "shield", src: "/police5.png" },
 ];
 const thumbs2 = [
-  { id: "riot", src: "/military1.png" },
-  { id: "gladiator", src: "/military2.png" },
-  { id: "patrol", src: "/military3.png" },
-  { id: "guard", src: "/military4.png" },
-  { id: "shield", src: "/military5.png" },
+  // Filenames on disk are capitalised (Military1.png …). Match the exact case:
+  // Linux/Vercel filesystems are case-sensitive and lowercase refs 404 there.
+  { id: "riot", src: "/Military1.png" },
+  { id: "gladiator", src: "/Military2.png" },
+  { id: "patrol", src: "/Military3.png" },
+  { id: "guard", src: "/Military4.png" },
+  { id: "shield", src: "/Military5.png" },
 ];
 const thumbs3 = [
   { id: "riot", src: "/policee1.png" },

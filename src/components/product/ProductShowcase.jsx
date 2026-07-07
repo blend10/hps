@@ -418,7 +418,7 @@ const ProductShowcase = ({ product = "riot" }) => {
                 </p>
               </div>
               <Image
-                src="/arrowdown.svg"
+                src="/arrowDown.svg"
                 alt=""
                 width={16}
                 height={16}

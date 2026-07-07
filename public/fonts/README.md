@@ -1,20 +1,40 @@
-# Neue Montreal font files
+# Fonts
 
-`src/app/globals.css` loads Neue Montreal via `@font-face` and applies it to
-every page. It expects these files **in this folder** (`public/fonts/`):
+Fonts are loaded via **`next/font`** in `src/app/layout.js`, which self-hosts,
+optimizes, and eliminates layout shift automatically. There is no longer any
+`@font-face` in `globals.css`.
+
+## Current setup
+
+The site ships **Space Grotesk** (a geometric-grotesque close to Neue Montreal)
+via `next/font/google`. It loads with zero runtime request to Google and exposes
+the `--font-sans` CSS variable that `globals.css` and Tailwind's `font-sans`
+utility consume.
+
+## Switching to the licensed Neue Montreal
+
+Once you have the licensed `.woff2` files, drop them in this folder and swap the
+Google import in `src/app/layout.js` for `next/font/local`:
+
+```js
+import localFont from "next/font/local";
+
+const neueMontreal = localFont({
+  src: [
+    { path: "../../public/fonts/NeueMontreal-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/NeueMontreal-Medium.woff2",  weight: "500", style: "normal" },
+    { path: "../../public/fonts/NeueMontreal-Bold.woff2",    weight: "700", style: "normal" },
+  ],
+  display: "swap",
+  variable: "--font-sans",
+});
+```
+
+Then use `neueMontreal.variable` on `<html>` instead of `spaceGrotesk.variable`.
+Nothing in `globals.css` needs to change — it already reads `--font-sans`.
+
+Expected files (exact names):
 
 - `NeueMontreal-Regular.woff2`  (weight 400)
 - `NeueMontreal-Medium.woff2`   (weight 500)
 - `NeueMontreal-Bold.woff2`     (weight 700)
-
-Add the files with those exact names and they go live on the next reload — no
-code changes needed. Until then the app builds fine and falls back to
-Arial/Helvetica.
-
-## Notes
-
-- `.woff2` is recommended for the web. If your files are `.otf` / `.ttf` / `.woff`,
-  either convert them (e.g. https://cloudconvert.com/otf-to-woff2) or update the
-  `url(...)`/`format(...)` in the `@font-face` blocks in `globals.css` to match.
-- Want more weights (Light 300, Thin, italics, ...)? Drop the file here and add a
-  matching `@font-face` block in `globals.css`.

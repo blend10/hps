@@ -1,22 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
-import FooterWordmark from "./FooterWordmark";
+import FooterWordmarkLazy from "./FooterWordmarkLazy";
 
+// hrefs point at the real routes under src/app/*. "Our Technology" has no page
+// yet, so it is marked `disabled` and renders as a non-clickable label (mirrors
+// the header mega-menu) instead of linking to a 404.
 const navColumns = [
   {
     title: "Company",
     links: [
-      { label: "About HPS", href: "/about" },
-      { label: "Our Technology", href: "/technology" },
-      { label: "Careers", href: "/careers" },
+      { label: "About HPS", href: "/aboutUs" },
+      { label: "Our Technology", href: "/technology", disabled: true },
+      { label: "Careers", href: "/company" },
     ],
   },
   {
     title: "Products",
     links: [
-      { label: "Gladiator", href: "/products/gladiator" },
-      { label: "Riot Helmet 1.0", href: "/products/riot-helmet" },
-      { label: "Lift Airborne AV2.2", href: "/products/lift-airborne" },
+      { label: "Gladiator", href: "/product/gladiator" },
+      { label: "Riot Helmet 1.0", href: "/product/riot" },
+      { label: "Lift Airborne AV2.2", href: "/product/airborne" },
     ],
   },
   {
@@ -99,16 +102,28 @@ const Footer = () => {
                   {column.title}
                 </h3>
                 <ul className="mt-4 space-y-2.5">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-sm  text-[#C7CAD1] transition-colors hover:text-white"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {column.links.map((link) =>
+                    link.disabled ? (
+                      <li key={link.label}>
+                        <span
+                          aria-disabled="true"
+                          title="Coming soon"
+                          className="cursor-not-allowed text-sm text-[#6b6b6b]"
+                        >
+                          {link.label}
+                        </span>
+                      </li>
+                    ) : (
+                      <li key={link.label}>
+                        <Link
+                          href={link.href}
+                          className="text-sm  text-[#C7CAD1] transition-colors hover:text-white"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
             ))}
@@ -116,7 +131,7 @@ const Footer = () => {
         </div>
 
         {/* Legal bar */}
-        <div className="flex flex-col gap-4 border-b-2 border-neutral-800 py-6 text-[13px] font-medium uppercase tracking-tight text-[#464646] sm:flex-row sm:items-center sm:justify-between sm:text-[16px]">
+        <div className="flex flex-col gap-4 border-b-2 border-neutral-800 py-6 text-[13px] font-medium uppercase tracking-tight text-[#8a8a8a] sm:flex-row sm:items-center sm:justify-between sm:text-[16px]">
           <p>© High Protection Systems 2026 — All Rights Reserved.</p>
           <div className="flex items-center gap-6">
             <Link
@@ -134,9 +149,10 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Oversized wordmark, clipped at the page edge.
-            Hover reveals the image-filled variant under a torch/spotlight. */}
-        <FooterWordmark />
+        {/* Oversized wordmark, clipped at the page edge. Hover reveals the
+            image-filled variant under a torch/spotlight. Lazy-loaded (ssr:false)
+            so this decorative, hover-only JS stays off the critical path. */}
+        <FooterWordmarkLazy />
       </div>
     </footer>
   );

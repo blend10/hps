@@ -1,9 +1,12 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
 // "Helmets" — a three-up product showcase on black.
+//
+// Server Component: the hover crossfade and corner-bracket reveal are pure
+// Tailwind group-hover/group-focus-visible CSS, so no client JS is needed.
+// This section renders on nearly every route, so keeping it server-only avoids
+// shipping/hydrating a dead client chunk site-wide.
 //
 // A horizontal strip of three helmets, each in its own cell separated by
 // dashed vertical rules. Under each helmet sits a dashed baseline and a

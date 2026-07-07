@@ -43,11 +43,14 @@ const Frontline = () => {
           max-w flow while the photo escapes it. Hidden on small screens where
           there's no room beside the copy. */}
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block">
+        {/* No `priority`: this image is below the fold, so eager-loading it
+            would compete for bandwidth with the true above-the-fold LCP. It
+            lazy-loads by default. */}
         <Image
           src="/rightImage.jpg"
           alt="Tactical operator in full protective gear"
           fill
-          priority
+          loading="lazy"
           className="object-contain object-left transform-[scaleX(-1.15)_scaleY(1.15)]"
           sizes="55vw"
         />
