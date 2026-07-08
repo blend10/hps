@@ -2,100 +2,113 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/i18n/client";
+import { localeConfig, localeHref, locales, stripLocale } from "@/i18n/config";
 
 // Products shown in the header hover menu — image + short blurb per system.
-// hrefs map to the real product routes under src/app/product/*.
+// hrefs map to the real product routes under src/app/[lang]/product/*.
+// Copy lives in the dictionary under `header.productMenu.<id>`.
 const productMenu = [
-  {
-    title: "RIOT",
-    description:
-      "The RH1.0 is a high-end head protection for crowd control application.",
-    image: "/helmet1.png",
-    href: "/product/riot",
-  },
-  {
-    title: "Gladiator",
-    description: "The GLADIATOR is the newest generation of SWAT-helmets.",
-    image: "/helmet2.png",
-    href: "/product/gladiator",
-  },
-  {
-    title: "Lift Airborne AV2.2",
-    description:
-      "Designed for airborne forces, combat aviators, and special operations pilots.",
-    image: "/helmet3.png",
-    href: "/product/airborne",
-  },
+  { id: "riot", image: "/helmet1.png", href: "/product/riot" },
+  { id: "gladiator", image: "/helmet2.png", href: "/product/gladiator" },
+  { id: "airborne", image: "/helmet3.png", href: "/product/airborne" },
 ];
 
 // Full navigation shown in the hamburger mega-menu. Rendered as a CSS grid:
 // three columns on the first row (HPS · Products · Our Technology) and a second
 // row where Latest News spans two columns (its links flow inline) with Contact
 // Us in the third. `span2`/`inline` drive that layout per section.
-// hrefs point at the real routes under src/app/*. Links whose destination page
-// does not exist yet are marked `disabled` — they render as non-clickable
+// `title` and `label` are dictionary keys, resolved at render.
+// hrefs point at the real routes under src/app/[lang]/*. Links whose destination
+// page does not exist yet are marked `disabled` — they render as non-clickable
 // labels until the page is built (see the mega-menu render below).
 const menuSections = [
   {
-    title: "HPS",
+    key: "hps",
+    title: "header.sections.hps",
     links: [
-      { label: "About Us", href: "/aboutUs" },
-      { label: "Motorsport Heritage", href: "/motorsportHeritage" },
-      { label: "Careers", href: "/company" },
+      { label: "header.links.aboutUs", href: "/aboutUs" },
+      { label: "header.links.motorsportHeritage", href: "/motorsportHeritage" },
+      { label: "header.links.careers", href: "/company" },
     ],
   },
   {
-    title: "Products",
+    key: "products",
+    title: "header.sections.products",
     links: [
-      { label: "Gladiator", href: "/product/gladiator" },
-      { label: "Riot Helmet 1.0", href: "/product/riot" },
-      { label: "Lift Airborne AV2.2", href: "/product/airborne" },
+      { label: "header.links.gladiator", href: "/product/gladiator" },
+      { label: "header.links.riotHelmet", href: "/product/riot" },
+      { label: "header.links.liftAirborne", href: "/product/airborne" },
     ],
   },
   {
-    title: "Our Technology",
+    key: "technology",
+    title: "header.sections.technology",
     links: [
       {
-        label: "Certifications & Standards",
+        label: "header.links.certifications",
         href: "/technology/certifications",
         disabled: true,
       },
       {
-        label: "R&D and Testing",
+        label: "header.links.research",
         href: "/technology/research",
         disabled: true,
       },
       {
-        label: "Impact Absorption",
+        label: "header.links.impactAbsorption",
         href: "/technology/impact-absorption",
         disabled: true,
       },
     ],
   },
   {
-    title: "Latest News",
+    key: "latestNews",
+    title: "header.sections.latestNews",
     span2: true,
     inline: true,
     links: [
-      { label: "HPS Show", href: "/news/hps-show", disabled: true },
-      { label: "Press Release", href: "/news/press-release", disabled: true },
-      { label: "Events", href: "/news/events", disabled: true },
+      { label: "header.links.hpsShow", href: "/news/hps-show", disabled: true },
+      {
+        label: "header.links.pressRelease",
+        href: "/news/press-release",
+        disabled: true,
+      },
+      { label: "header.links.events", href: "/news/events", disabled: true },
     ],
   },
   {
-    title: "Contact Us",
-    links: [{ label: "Get in Touch", href: "/contact" }],
+    key: "contactUs",
+    title: "header.sections.contactUs",
+    links: [{ label: "header.links.getInTouch", href: "/contact" }],
   },
 ];
+
+// Remembers the visitor's choice so src/proxy.js sends them straight to it next
+// time instead of re-negotiating from Accept-Language. One year, lax.
+//
+// Defined at module scope, not inside the component: the React Compiler's
+// `immutability` rule rejects assigning to a value from an outer scope
+// (`document`) anywhere inside a component body, even from an event handler.
+const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+function persistLocale(locale) {
+  document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; SameSite=Lax`;
+}
 
 const Header = () => {
   // The header floats transparently over the hero video at the top of the page.
   // On the homepage it also stays hidden through the hero's opening sequence and
   // only slides in once the video has grown to fullscreen (see .header-intro).
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const router = useRouter();
+  const { t, lang, href } = useI18n();
+
+  // `pathname` is locale-prefixed ("/de", "/de/contact"), so compare against the
+  // locale root rather than "/".
+  const isHome = stripLocale(pathname) === "/";
 
   // When expanded, the hover pill grows to the full container width and lays the
   // products out as side-by-side cards instead of the compact vertical list.
@@ -116,11 +129,15 @@ const Header = () => {
   // the container, the brand mark returns on the left, buttons stay on the right.
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Selected language. i18n itself is not wired yet, but the selector is a real
-  // control: choosing an option updates the active state so keyboard/AT users
-  // get feedback instead of pressing dead buttons. Swap this for a router
-  // locale switch once localisation lands.
-  const [lang, setLang] = useState("English");
+  // Switch language: persist the choice, then re-point the CURRENT route at the
+  // new locale ("/en/contact" -> "/ar/contact"). `replace` rather than `push` so
+  // the back button leaves the site instead of cycling through languages.
+  const selectLocale = (locale) => {
+    setLangOpen(false);
+    if (locale === lang) return;
+    persistLocale(locale);
+    router.replace(localeHref(locale, stripLocale(pathname)));
+  };
 
   // Either full-width panel (products cards or the hamburger nav) puts the pill
   // into its wide, container-spanning layout.
@@ -203,7 +220,7 @@ const Header = () => {
       <div className="pointer-events-auto bg-black border-b border-white/5">
         <div className="mx-auto flex h-[60px] container items-center justify-between px-6 text-[11px] md:px-8">
           <span className="text-[#8a8a8a] font-medium text-[16px]">
-            A brand of Racing Force
+            {t("header.brandOf")}
           </span>
 
           {/* Sister-brand wordmarks */}
@@ -247,8 +264,9 @@ const Header = () => {
           brand and the pill are in flow; once the brand goes `hidden` (see
           below) it's the pill alone, and `justify-between` collapses a single
           child to flex-start — i.e. the pill jumps to the LEFT edge instead of
-          staying put on the right. `ml-auto` on the pill (further down) pins it
-          right unconditionally, so this doesn't depend on justify-between at all. */}
+          staying put on the right. `ms-auto` on the pill (further down) pins it
+          to the inline-end unconditionally, so this doesn't depend on
+          justify-between at all. */}
       <div
         className={`relative mx-auto flex container px-6 py-4 md:px-8 ${
           expanded ? "items-center" : "items-start"
@@ -259,7 +277,7 @@ const Header = () => {
             open too — below `sm` the widened pill has no room to sit beside it
             and would otherwise squash the logo and overhang the right gutter. */}
         <Link
-          href="/"
+          href={href("/")}
           aria-hidden={anyOpen}
           tabIndex={anyOpen ? -1 : undefined}
           className={`pointer-events-auto shrink-0 items-center gap-2 transition-opacity duration-300 sm:gap-4 ${
@@ -276,7 +294,7 @@ const Header = () => {
                   "hidden md:flex md:opacity-100"
                 : "flex opacity-100"
           }`}
-          aria-label="High Protection Systems — home"
+          aria-label={t("common.homeAria")}
         >
           <Image
             src="/hpsFooterLogo.svg"
@@ -287,6 +305,7 @@ const Header = () => {
             className="h-10 w-auto sm:h-14"
           />
           <span className="hidden h-12 w-px bg-neutral-600 sm:block" />
+          {/* The wordmark is the registered brand name — never translated. */}
           <span className=" hidden sm:block md text-[13px] font-medium leading-[1.15] text-neutral-100">
             High
             <br />
@@ -306,7 +325,7 @@ const Header = () => {
           className={`pointer-events-auto group/products rounded-xl p-2 transition-[background-color,backdrop-filter] duration-300 ${
             wideVisual
               ? "absolute inset-x-6 top-4 z-10 max-h-[calc(100svh-5.5rem)] overflow-y-auto overscroll-contain bg-[#191919e6] backdrop-blur-3xl backdrop-saturate-150 md:inset-x-8"
-              : "relative ml-auto w-max bg-[#19191999] backdrop-blur-2xl"
+              : "relative ms-auto w-max bg-[#19191999] backdrop-blur-2xl"
           }`}
         >
           {/* Wide header row. On phones the logo block and the button cluster
@@ -325,7 +344,7 @@ const Header = () => {
                 <button
                   type="button"
                   onClick={closeAll}
-                  aria-label="Close navigation panel"
+                  aria-label={t("header.closePanel")}
                   className="-m-1 flex h-9 w-9 items-center justify-center rounded-md p-1 transition hover:bg-white/10"
                 >
                   {/* close.svg is a 25x11 pair of corner brackets, not a square
@@ -340,7 +359,7 @@ const Header = () => {
                     className="h-auto w-5"
                   />
                 </button>
-                <div className="flex items-center gap-3 py-3 pl-1">
+                <div className="flex items-center gap-3 py-3 ps-1">
                   <Image
                     src="/hpsFooterLogo.svg"
                     alt="High Protection Systems"
@@ -363,14 +382,14 @@ const Header = () => {
             <div
               className={`flex items-center gap-2 ${
                 wideVisual
-                  ? "ml-auto w-fit justify-end"
+                  ? "ms-auto w-fit justify-end"
                   : `w-fit justify-between ${productsHovered ? "w-full" : ""}`
               }`}
             >
               {!wideVisual && (
                 <button
                   type="button"
-                  aria-label="Expand menu"
+                  aria-label={t("header.expandMenu")}
                   aria-pressed={expanded}
                   onClick={() => {
                     setExpanded(true);
@@ -381,7 +400,7 @@ const Header = () => {
                   // pushes the button row past a 320px viewport, and the
                   // "expanded" card layout it toggles is single-column on phones
                   // anyway, so it buys nothing there.
-                  className={`order-first mr-3 h-11 w-11 items-center justify-center text-white transition hover:scale-110 hover:opacity-70 sm:mr-6 ${
+                  className={`order-first me-3 h-11 w-11 items-center justify-center text-white transition hover:scale-110 hover:opacity-70 sm:me-6 ${
                     productsHovered
                       ? "hidden sm:flex sm:opacity-100"
                       : "hidden opacity-0"
@@ -389,7 +408,8 @@ const Header = () => {
                 >
                   <Image
                     src="/expand.svg"
-                    alt="Expand Icon"
+                    alt=""
+                    aria-hidden="true"
                     className="h-5 w-5"
                     width={20}
                     height={20}
@@ -407,18 +427,19 @@ const Header = () => {
                     setLangOpen(false);
                     setMenuOpen(false);
                   }}
-                  className={`flex h-11 items-center rounded-md px-5 text-[13px] font-semibold uppercase tracking-tight transition-colors ${
+                  className={`flex h-11 items-center rounded-md px-5 text-[13px] font-medium uppercase tracking-tight transition-colors ${
                     menuOpen
                       ? "bg-white text-[#EF4123]"
                       : "bg-[#EF4123] text-white"
                   }`}
                 >
-                  Products
+                  {t("header.products")}
                 </button>
 
+                {/* Language switcher. */}
                 <button
                   type="button"
-                  aria-label="Select language"
+                  aria-label={t("header.selectLanguage")}
                   aria-haspopup="listbox"
                   aria-expanded={langOpen}
                   onClick={() => {
@@ -431,7 +452,8 @@ const Header = () => {
                 >
                   <Image
                     src="/translate.svg"
-                    alt="Translate Icon"
+                    alt=""
+                    aria-hidden="true"
                     className="h-5 w-5"
                     width={20}
                     height={20}
@@ -440,7 +462,9 @@ const Header = () => {
 
                 <button
                   type="button"
-                  aria-label={menuOpen ? "Close menu" : "Open menu"}
+                  aria-label={
+                    menuOpen ? t("header.closeMenu") : t("header.openMenu")
+                  }
                   aria-expanded={menuOpen}
                   onClick={() => {
                     setMenuOpen((open) => !open);
@@ -503,79 +527,85 @@ const Header = () => {
                 /* Full-width layout: 3 side-by-side product cards */
                 <div className="px-2 ">
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    {productMenu.map((product) => (
-                      <Link
-                        key={product.title}
-                        href={product.href}
-                        className="group/item relative flex flex-col overflow-hidden "
-                      >
-                        <span className="relative h-50 w-full overflow-hidden rounded-xs bg-white">
-                          <Image
-                            src={product.image}
-                            alt={product.title}
-                            fill
-                            className="object-contain"
-                            sizes="(max-width: 640px) 100vw, 33vw"
-                          />
-                        </span>
-
-                        <span className="mt-3 flex items-center justify-between px-1 pb-1">
-                          <span className="text-[13px] font-medium uppercase leading-tight tracking-tight text-white">
-                            {product.title}
+                    {productMenu.map((product) => {
+                      const title = t(`header.productMenu.${product.id}.title`);
+                      return (
+                        <Link
+                          key={product.id}
+                          href={href(product.href)}
+                          className="group/item relative flex flex-col overflow-hidden "
+                        >
+                          <span className="relative h-50 w-full overflow-hidden rounded-xs bg-white">
+                            <Image
+                              src={product.image}
+                              alt={title}
+                              fill
+                              className="object-contain"
+                              sizes="(max-width: 640px) 100vw, 33vw"
+                            />
                           </span>
-                          <Image
-                            src="/orangeArrow.svg"
-                            alt=""
-                            width={16}
-                            height={16}
-                            className="h-4 w-4 shrink-0 transition-transform group-hover/item:translate-x-0.5 group-hover/item:-translate-y-0.5"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </Link>
-                    ))}
+
+                          <span className="mt-3 flex items-center justify-between px-1 pb-1">
+                            <span className="text-[13px] font-medium uppercase leading-tight tracking-tight text-white">
+                              {title}
+                            </span>
+                            <Image
+                              src="/orangeArrow.svg"
+                              alt=""
+                              width={16}
+                              height={16}
+                              className="h-4 w-4 shrink-0 transition-transform group-hover/item:translate-x-0.5 group-hover/item:-translate-y-0.5 rtl:group-hover/item:-translate-x-0.5"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               ) : (
                 /* Compact layout: vertical product list */
                 <div className="w-full px-2 pt-1.5">
-                  {productMenu.map((product, i) => (
-                    <Link
-                      key={product.title}
-                      href={product.href}
-                      className={`group/item flex items-center gap-4 py-4 transition-colors hover:bg-white/4 ${
-                        i > 0 ? "border-t border-white/10" : ""
-                      }`}
-                    >
-                      <span className="relative h-16 w-16 shrink-0">
+                  {productMenu.map((product, i) => {
+                    const title = t(`header.productMenu.${product.id}.title`);
+                    return (
+                      <Link
+                        key={product.id}
+                        href={href(product.href)}
+                        className={`group/item flex items-center gap-4 py-4 transition-colors hover:bg-white/4 ${
+                          i > 0 ? "border-t border-white/10" : ""
+                        }`}
+                      >
+                        <span className="relative h-16 w-16 shrink-0">
+                          <Image
+                            src={product.image}
+                            alt={title}
+                            fill
+                            className="object-contain"
+                            sizes="64px"
+                          />
+                        </span>
+
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[17px] font-semibold leading-tight text-white">
+                            {title}
+                          </span>
+                          <span className="mt-1 block text-[12.5px] leading-snug text-neutral-400">
+                            {t(`header.productMenu.${product.id}.description`)}
+                          </span>
+                        </span>
+
                         <Image
-                          src={product.image}
-                          alt={product.title}
-                          fill
-                          className="object-contain"
-                          sizes="64px"
+                          src="/orangeArrow.svg"
+                          alt=""
+                          width={16}
+                          height={16}
+                          className="h-4 w-4 shrink-0 self-center transition-transform group-hover/item:translate-x-0.5 group-hover/item:-translate-y-0.5 rtl:group-hover/item:-translate-x-0.5"
+                          aria-hidden="true"
                         />
-                      </span>
-
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-[17px] font-semibold leading-tight text-white">
-                          {product.title}
-                        </span>
-                        <span className="mt-1 block text-[12.5px] leading-snug text-neutral-400">
-                          {product.description}
-                        </span>
-                      </span>
-
-                      <Image
-                        src="/orangeArrow.svg"
-                        alt=""
-                        width={16}
-                        height={16}
-                        className="h-4 w-4 shrink-0 self-center transition-transform group-hover/item:translate-x-0.5 group-hover/item:-translate-y-0.5"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  ))}
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -585,7 +615,11 @@ const Header = () => {
               is exactly the pill's width and rides on the pill's real backdrop
               blur. Only opens in the compact (non-expanded) state. Width is not
               transitioned, matching the products menu, so the pill never lingers
-              wide on close. */}
+              wide on close.
+
+              Each option is labelled in its own language (Deutsch, العربية) —
+              the convention for language pickers, since a visitor who cannot read
+              the current locale can still find theirs. */}
           <div
             className={`grid w-full transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
               langOpen && !wideVisual
@@ -594,21 +628,19 @@ const Header = () => {
             }`}
           >
             <div className="overflow-hidden relative">
-              <ul role="listbox" aria-label="Language" className="px-1 pt-2">
-                {[
-                  { code: "English", label: "English Language" },
-                  { code: "Arabic", label: "Arabic Language" },
-                  { code: "German", label: "German Language" },
-                ].map((option, i) => {
-                  const active = option.code === lang;
+              <ul
+                role="listbox"
+                aria-label={t("header.languageListLabel")}
+                className="px-1 pt-2"
+              >
+                {locales.map((code, i) => {
+                  const active = code === lang;
                   return (
-                    <li key={option.code} role="option" aria-selected={active}>
+                    <li key={code} role="option" aria-selected={active}>
                       <button
                         type="button"
-                        onClick={() => {
-                          setLang(option.code);
-                          setLangOpen(false);
-                        }}
+                        lang={localeConfig[code].htmlLang}
+                        onClick={() => selectLocale(code)}
                         className={`block w-full px-3 py-3 text-center text-[13px] transition-colors ${
                           i > 0 ? "border-t border-white/10" : ""
                         } ${
@@ -617,7 +649,7 @@ const Header = () => {
                             : "text-white hover:bg-white/5"
                         }`}
                       >
-                        {option.label}
+                        {localeConfig[code].nativeLabel}
                       </button>
                     </li>
                   );
@@ -645,28 +677,30 @@ const Header = () => {
               <div className="grid grid-cols-1 gap-6 px-2 pb-2 pt-4 lg:grid-cols-[minmax(240px,1fr)_2.4fr]">
                 {/* Left: company overview media card */}
                 <Link
-                  href="/company"
+                  href={href("/company")}
                   onClick={() => setMenuOpen(false)}
                   className="group/card relative flex min-h-45 flex-col justify-end overflow-hidden rounded-lg"
                 >
-                  <Image
-                    src="/videos/hero-poster.jpg"
-                    alt=""
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover/card:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 340px"
+                  <video
+                    src="/videos/video222.mp4"
+                    poster="/videos/hero-poster.jpg"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/card:scale-105"
                   />
                   <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                   <span className="relative z-10 flex items-center justify-between gap-4 p-4">
                     <span className="text-[13px] font-semibold uppercase tracking-wide text-white">
-                      Company Overview
+                      {t("header.companyOverview")}
                     </span>
                     <Image
                       src="/orangeArrow.svg"
                       alt=""
                       width={16}
                       height={16}
-                      className="h-4 w-4 shrink-0 transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5"
+                      className="h-4 w-4 shrink-0 transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 rtl:group-hover/card:-translate-x-0.5"
                       aria-hidden="true"
                     />
                   </span>
@@ -676,11 +710,11 @@ const Header = () => {
                 <nav className="grid grid-cols-2 gap-x-8 gap-y-7 self-center sm:grid-cols-3">
                   {menuSections.map((section) => (
                     <div
-                      key={section.title}
+                      key={section.key}
                       className={section.span2 ? "sm:col-span-2" : ""}
                     >
                       <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
-                        {section.title}
+                        {t(section.title)}
                       </h3>
                       <ul
                         className={
@@ -696,20 +730,20 @@ const Header = () => {
                             <li key={link.label}>
                               <span
                                 aria-disabled="true"
-                                title="Coming soon"
+                                title={t("common.comingSoon")}
                                 className="cursor-not-allowed text-[14px] leading-tight text-neutral-500"
                               >
-                                {link.label}
+                                {t(link.label)}
                               </span>
                             </li>
                           ) : (
                             <li key={link.label}>
                               <Link
-                                href={link.href}
+                                href={href(link.href)}
                                 onClick={() => setMenuOpen(false)}
                                 className="text-[14px] leading-tight text-neutral-200 transition-colors hover:text-white"
                               >
-                                {link.label}
+                                {t(link.label)}
                               </Link>
                             </li>
                           ),

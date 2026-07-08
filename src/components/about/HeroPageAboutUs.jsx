@@ -1,5 +1,7 @@
 import Image from "next/image";
 import HeroPanel from "./HeroPanel";
+import Lines from "@/components/general/Lines";
+import { getT } from "@/i18n/server";
 
 // About-Us hero. The interactive grayscale/colour video panels are the only
 // client-side piece and live in ./HeroPanel ("use client"); this shell — the
@@ -9,15 +11,12 @@ import HeroPanel from "./HeroPanel";
 // Panel assets (add to /public — HeroPanel is wired to these paths):
 //   images: /item1.png … item4.png   (the still shown at rest, also the video poster)
 //   videos: /videos/videoItem1.mp4 … videoItem4.mp4   (plays on hover)
+// Panel labels come from the dictionary at `aboutHero.panels.<id>`.
 const PANELS = [
-  { label: "Motorsport", image: "/item1.png", video: "/videos/videoItem1.mp4" },
-  { label: "Aviation", image: "/item2.png", video: "/videos/videoItem2.mp4" },
-  { label: "Police", image: "/item3.png", video: "/videos/videoItem3.mp4" },
-  {
-    label: "Gendarmerie",
-    image: "/item4.png",
-    video: "/videos/videoItem4.mp4",
-  },
+  { id: "motorsport", image: "/item1.png", video: "/videos/videoItem1.mp4" },
+  { id: "aviation", image: "/item2.png", video: "/videos/videoItem2.mp4" },
+  { id: "police", image: "/item3.png", video: "/videos/videoItem3.mp4" },
+  { id: "gendarmerie", image: "/item4.png", video: "/videos/videoItem4.mp4" },
 ];
 
 // Brand logos shown in the card.
@@ -28,7 +27,9 @@ const BRANDS = [
   { name: "Racing Spirit", logo: "/HeadeLogo4.svg" },
 ];
 
-const HeroPageAboutUs = () => {
+const HeroPageAboutUs = async ({ lang }) => {
+  const t = await getT(lang);
+
   return (
     <section className="relative h-svh min-h-140 w-full bg-black">
       {/* Panel row — clips the grayscale/colour panels to the section, while
@@ -36,7 +37,13 @@ const HeroPageAboutUs = () => {
           mobile the four panels form a 2×2 grid; from sm+ they sit in a row. */}
       <div className="grid h-full w-full grid-cols-2 grid-rows-2 overflow-hidden sm:flex sm:flex-row">
         {PANELS.map((panel, i) => (
-          <HeroPanel key={panel.label} {...panel} priority={i === 0} />
+          <HeroPanel
+            key={panel.id}
+            label={t(`aboutHero.panels.${panel.id}`)}
+            image={panel.image}
+            video={panel.video}
+            priority={i === 0}
+          />
         ))}
       </div>
 
@@ -62,11 +69,16 @@ const HeroPageAboutUs = () => {
                 className="animate-bounce"
               />
               <span className="font-medium uppercase tracking-tight text-[#EF4123]">
-                SCROLL TO EXPLORE
+                {t("common.scrollToExplore")}
               </span>
             </div>
 
-            <Image src="/shield.svg" alt="HPS Badge" width={40} height={40} />
+            <Image
+              src="/shield.svg"
+              alt={t("common.hpsBadge")}
+              width={40}
+              height={40}
+            />
           </div>
 
           {/* Bracketed headline */}
@@ -74,16 +86,14 @@ const HeroPageAboutUs = () => {
             <div className="relative px-6 py-3">
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-0 h-6 w-6 border-l-4 border-t-4 border-white md:h-8 md:w-8"
+                className="pointer-events-none absolute start-0 top-0 h-6 w-6 border-s-4 border-t-4 border-white md:h-8 md:w-8"
               />
               <h2 className="text-center text-4xl font-medium leading-tight tracking-tight text-white md:text-[96px]">
-                Built for Your
-                <br />
-                Protection
+                <Lines lines={t("aboutHero.headline")} />
               </h2>
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 right-0 h-6 w-6 border-b-4 border-r-4 border-white md:h-8 md:w-8"
+                className="pointer-events-none absolute bottom-0 end-0 h-6 w-6 border-b-4 border-e-4 border-white md:h-8 md:w-8"
               />
             </div>
           </div>

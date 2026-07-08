@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/i18n/client";
+import Lines from "@/components/general/Lines";
 
 // "ScrollEffect" — a pinned deck of product cards that deal away on scroll.
 //
@@ -17,9 +20,8 @@ import { useEffect, useRef, useState } from "react";
 // own `sticky` layer and never moves; only which background is opaque changes
 // (scroll1 → scroll2 → scroll3).
 //
-// Content is data-driven via `panels`. Each panel carries its background, hero
-// shot, name, blurb and thumbnail strip. Assets live in /public; where a
-// dedicated hero doesn't exist yet we reuse man1.png (swap `hero` per panel).
+// Assets are data-driven via `panels`; the name/blurb for each panel come from
+// the dictionary at `scrollEffect.panels.<id>`.
 
 const thumbs = [
   { id: "riot", src: "/police1.png" },
@@ -45,33 +47,22 @@ const thumbs3 = [
   { id: "shield", src: "/policee5.png" },
 ];
 
+// NOTE: the `gladiator` panel intentionally carries the Lift Airborne copy and
+// `patrol` carries the Gladiator copy — that mapping predates this file's i18n
+// migration and is preserved verbatim. The dictionary mirrors it.
 const panels = [
-  {
-    id: "riot",
-    background: "/scroll1.png",
-    hero: "/man1.png",
-    name: "RIOT",
-    thumbs: thumbs,
-    blurb:
-      "The RH1.0 is a high-end head protection for crowd control application. The interfaces on both sides enable the use as helmet-mask-combination while the use of tear gas. The lightweight aramid sandwich shell combined with F1 proven EPS features excellent shock and stab protection.",
-  },
+  { id: "riot", background: "/scroll1.png", hero: "/man1.png", thumbs: thumbs },
   {
     id: "gladiator",
     background: "/scroll2.png",
     hero: "/man2.png",
-    name: "Lift Airborne AV2.2",
     thumbs: thumbs2,
-    blurb:
-      "The Lift Airborne AV2.2 is a Next Generation Fixed Wing Helmet (NGFWH), setting a new standard  as the lightest, most comfortable, and breathable design, while providing unmatched superior protection in helmet history.",
   },
   {
     id: "patrol",
     background: "/scroll3.png",
     hero: "/man3.png",
-    name: "Gladiator",
     thumbs: thumbs3,
-    blurb:
-      "Based on the innovative HPS design and featuring a lightweight aramid sandwich shell, developed and tested using the latest scientific knowledge, the GLADIATOR is the newest generation of SWAT-helmets according to the Technical Guideline (TR) “Ballistic helmet” overall system of May 2010 German Police University (DHPol/Police Technical Institute-PTI).",
   },
 ];
 
@@ -81,19 +72,20 @@ const panels = [
 // so the pinned deck can slide each card away on scroll, exactly like desktop.
 // The desktop grid classes are unchanged; every mobile tweak is a non-lg class.
 const PanelCard = ({ panel }) => {
+  const { t } = useI18n();
+  const name = t(`scrollEffect.panels.${panel.id}.name`);
+
   return (
     <div className="relative mx-auto flex max-h-[calc(120svh-2.5rem)] w-full max-w-7xl flex-col gap-0 overflow-hidden rounded-md bg-white/10 text-white shadow-2xl lg:grid lg:max-h-none lg:grid-cols-[1fr_1.1fr_1fr] lg:gap-px lg:rounded-none">
       {/* LEFT — headline + thumbnails */}
       <div className="flex shrink-0 flex-col justify-between gap-4 bg-black p-4 lg:gap-10 lg:p-6 md:p-6">
         <div>
           <h2 className="text-2xl font-medium leading-[0.95] tracking-tight sm:text-3xl md:text-[50px]">
-            Our toughest
-            <br />
-            protective shell.
+            <Lines lines={t("scrollEffect.headline")} />
           </h2>
 
           <p className="mt-6 text-sm font-medium uppercase tracking-wide text-[#ff3b1f] lg:mt-8">
-            Police use
+            {t("scrollEffect.policeUse")}
           </p>
 
           <ul className="mt-3 flex flex-wrap gap-2">
@@ -114,7 +106,7 @@ const PanelCard = ({ panel }) => {
         </div>
 
         <p className="hidden border-t border-white/15 pt-3 text-xs font-medium uppercase tracking-tight text-neutral-400 lg:block">
-          Pro-level protection
+          {t("scrollEffect.proLevel")}
         </p>
       </div>
 
@@ -127,7 +119,7 @@ const PanelCard = ({ panel }) => {
       <div className="relative min-h-90 w-full flex-1 overflow-hidden bg-black sm:min-h-120 lg:aspect-auto lg:h-full lg:min-h-0 lg:flex-none">
         <Image
           src={panel.hero}
-          alt={`Officer wearing the ${panel.name} helmet and protective gear`}
+          alt={t("scrollEffect.heroAlt").replace("{name}", name)}
           fill
           className="object-cover object-top lg:object-center"
           sizes="(min-width: 1024px) 40vw, 100vw"
@@ -137,28 +129,31 @@ const PanelCard = ({ panel }) => {
       {/* RIGHT — product info */}
       <div className="flex shrink-0 flex-col justify-between gap-4 bg-black p-4 lg:gap-8 lg:p-6 md:p-6">
         <p className="hidden text-sm font-medium uppercase tracking-wide text-[#ff3b1f] lg:block">
-          Police use
+          {t("scrollEffect.policeUse")}
         </p>
 
         <div className="flex-1">
           <div className="mb-3 h-px w-full bg-white/15 lg:mb-8" />
           <h3 className="text-3xl font-medium tracking-tight sm:text-5xl lg:mt-50 md:text-6xl">
-            {panel.name}
+            {name}
           </h3>
           {/* Blurb clamped on mobile so a long paragraph can't push the card
               past one screen (kept short to give the hero more room); shown in
               full on desktop. */}
           <p className="mt-2 line-clamp-3 max-w-md text-xs leading-relaxed text-neutral-300 sm:line-clamp-4 sm:text-sm lg:mt-5 lg:line-clamp-none lg:text-sm">
-            {panel.blurb}
+            {t(`scrollEffect.panels.${panel.id}.blurb`)}
           </p>
         </div>
 
         {/* CTAs — the orangeArrow.svg is forced black via brightness-0 and
             pinned to each button's top-right corner; the label sits at the
             bottom-left. */}
+        {/* NOTE: these two hrefs are the original dead in-page anchors — there
+            are no #contact / #learn-more targets on the page. Left as-is; wiring
+            them to /contact and /products is a separate change. */}
         <div className="grid grid-cols-2 gap-3">
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className="group relative flex min-h-14 flex-col justify-end rounded-md bg-white px-5 py-3 text-sm font-medium uppercase tracking-tight text-black transition-colors hover:bg-neutral-200 lg:min-h-20 lg:py-4"
           >
             <Image
@@ -167,12 +162,12 @@ const PanelCard = ({ panel }) => {
               width={10}
               height={10}
               aria-hidden
-              className="absolute right-4 top-4 brightness-0"
+              className="absolute end-4 top-4 brightness-0 rtl:-scale-x-100"
             />
-            Contact us
-          </a>
-          <a
-            href="#learn-more"
+            {t("common.contactUs")}
+          </Link>
+          <Link
+            href={`/product/${panel.id}`}
             className="group relative flex min-h-14 flex-col justify-end rounded-md bg-white/20 px-5 py-3 text-sm font-medium uppercase tracking-tight text-white transition-colors hover:bg-white/30 lg:min-h-20 lg:py-4"
           >
             <Image
@@ -181,10 +176,10 @@ const PanelCard = ({ panel }) => {
               width={10}
               height={10}
               aria-hidden
-              className="absolute right-4 top-4 brightness-0 invert"
+              className="absolute end-4 top-4 brightness-0 invert rtl:-scale-x-100"
             />
-            Learn more
-          </a>
+            {t("common.learnMore")}
+          </Link>
         </div>
 
         {/* Colour swatches — hidden on mobile to keep the card within a screen. */}
@@ -192,17 +187,17 @@ const PanelCard = ({ panel }) => {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              aria-label="Black colourway"
+              aria-label={t("scrollEffect.blackColourway")}
               className="h-4 w-4 rounded-full bg-neutral-900 ring-2 ring-white ring-offset-2 ring-offset-black"
             />
             <button
               type="button"
-              aria-label="Slate colourway"
+              aria-label={t("scrollEffect.slateColourway")}
               className="h-4 w-4 rounded-full bg-slate-500"
             />
           </div>
           <span className="text-sm font-medium uppercase tracking-wide text-neutral-400">
-            2 Colors
+            {t("scrollEffect.colorCount")}
           </span>
         </div>
       </div>
@@ -226,6 +221,7 @@ const Panel = ({ panel, style, zIndex }) => {
 
 const ScrollEffect = () => {
   const sectionRef = useRef(null);
+  const { t } = useI18n();
   // progress: 0 at the section top, panels.length-1 at the bottom. Integer part
   // = how many cards have been dealt away; fractional part = the in-flight card.
   const [progress, setProgress] = useState(0);
@@ -275,7 +271,7 @@ const ScrollEffect = () => {
     // the card body is tuned to fit the viewport on mobile (see PanelCard).
     <section
       ref={sectionRef}
-      aria-label="Riot helmet range"
+      aria-label={t("scrollEffect.ariaLabel")}
       className="relative"
       style={{ height: `${panels.length * 100}svh` }}
     >

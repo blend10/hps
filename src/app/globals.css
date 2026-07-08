@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
-/* Fonts are loaded and optimised via next/font (see src/app/layout.js), which
-   sets the --font-sans CSS variable on <html>. To restore Neue Montreal, swap
-   the next/font/google import for next/font/local pointing at the woff2 files
-   in public/fonts (see public/fonts/README.md) — no change needed here. */
+/* Neue Montreal fonts are loaded and optimised via next/font/local (see src/app/layout.js),
+   which sets the --font-sans CSS variable on <html>. All font files are self-hosted
+   in public/fonts with zero external requests. */
 
 :root {
   --background: #ffffff;

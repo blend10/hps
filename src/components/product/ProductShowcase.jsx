@@ -3,14 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import Lines from "@/components/general/Lines";
+import { useI18n } from "@/i18n/client";
 
 // "ProductShowcase" — a single, reusable product hero shared by the Riot,
 // Gladiator and Airborne pages.
 //
 // The layout never changes between products; only the image and the copy do.
-// All of that lives in PRODUCTS below, keyed by product id. A page renders the
-// right one with <ProductShowcase product="riot" /> (see
-// src/app/product/riot/page.jsx).
+// Copy lives in the dictionary at `productShowcase.products.<id>`; the images
+// and colour swatch hexes are presentation and stay here in PRODUCT_MEDIA. A
+// page renders the right one with <ProductShowcase product="riot" /> (see
+// src/app/[lang]/product/riot/page.jsx).
 //
 // Design (matches the HPS product mock): a soft light-grey radial canvas with
 // a centered row of thumbnails near the top, the background-less product render
@@ -21,33 +24,14 @@ import { useEffect, useRef, useState } from "react";
 //   2. HELMET COLOR  — label + selectable colour swatches
 //   3. DIFFERENT SIZES — label + a size <select>
 //   4. IN THE BOX — label + contents, with a down-arrow
-//
-// Images live in /public and are listed per product in `images` (index 0 is
-// shown first). Only /riott1.png ships today; drop the rest in with the same
-// numbered names (/riot2.png … /airborne5.png) and the thumbnails light up
-// with no code change.
 
-export const PRODUCTS = {
+export const PRODUCT_MEDIA = {
   riot: {
-    name: ["Riot"],
-    description:
-      "The RH1.0 is a high-end head protection for crowd control application. The interfaces on both sides enable the use as helmet-mask-combination while the use of tear gas.",
     images: ["/riott1.png", "/rio2.png", "/rio3.png", "/rio4.png", "/rio5.png"],
-    colors: [
-      { name: "Black", hex: "#111111" },
-      { name: "Slate", hex: "#4b5563" },
-    ],
-    sizes: [
-      "SHELL SIZE 1 / 46,47",
-      "SHELL SIZE 2 / 48,49",
-      "SHELL SIZE 3 / 50,51",
-    ],
-    inTheBox: "RH 1.0 INCL. VISOR, DRAW STRING\nHELMET BAG, MANUAL",
+    // Swatch hexes align 1:1 with `productShowcase.products.riot.colors`.
+    colorHexes: ["#111111", "#4b5563"],
   },
   gladiator: {
-    name: ["Gladiator"],
-    description:
-      "Based on the innovative HPS design and featuring a lightweight aramid sandwich shell, developed and tested using the latest scientific knowledge, the GLADIATOR is the newest generation of SWAT-helmets",
     images: [
       "/gladiator1.png",
       "/gladiator2.png",
@@ -55,21 +39,9 @@ export const PRODUCTS = {
       "/gladiator4.png",
       "/gladiator5.png",
     ],
-    colors: [
-      { name: "Black", hex: "#111111" },
-      { name: "Coyote", hex: "#8a6d4b" },
-    ],
-    sizes: [
-      "SHELL SIZE 1 / 46,47",
-      "SHELL SIZE 2 / 48,49",
-      "SHELL SIZE 3 / 50,51",
-    ],
-    inTheBox: "RH 1.0 INCL. RAILS, DRAW STRING\nHELMET BAG, MANUAL",
+    colorHexes: ["#111111", "#8a6d4b"],
   },
   airborne: {
-    name: ["Lift Airborne", "AV2.2OT"],
-    description:
-      "The Lift Airborne AV2.2 is a Next Generation Fixed Wing Helmet (NGFWH), setting a new standard as the lightest, most comfortable, and breathable design, while providing unmatched superior protection in helmet history.",
     images: [
       "/airbrone1.png",
       "/airbrone2.png",
@@ -78,13 +50,7 @@ export const PRODUCTS = {
       "/airbrone5.png",
       "/airbrone6.png",
     ],
-    colors: [{ name: "Black", hex: "#111111" }],
-    sizes: [
-      "SHELL SIZE 1 / 46,47",
-      "SHELL SIZE 2 / 48,49",
-      "SHELL SIZE 3 / 50,51",
-    ],
-    inTheBox: "RH 1.0 INCL. VISOR, DRAW STRING\nHELMET BAG, MANUAL",
+    colorHexes: ["#111111"],
   },
 };
 
@@ -131,7 +97,7 @@ const Check = ({ className = "" }) => (
 // <select>. A rounded trigger opens a floating glassy panel of options with
 // hover + selected states; closes on outside-click, Escape, or selection, and
 // supports arrow-key / Enter navigation.
-const SizeSelect = ({ options, value, onChange }) => {
+const SizeSelect = ({ options, value, onChange, label, listLabel }) => {
   const [open, setOpen] = useState(false);
   // Which option the keyboard is currently on (for arrow-key navigation).
   const [activeIndex, setActiveIndex] = useState(value);
@@ -193,8 +159,8 @@ const SizeSelect = ({ options, value, onChange }) => {
         onKeyDown={onKeyDown}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Select size"
-        className={`flex w-full items-center justify-between gap-2 rounded-xl border bg-white/5 py-2.5 pl-4 pr-3 text-left font-medium uppercase tracking-tight text-white backdrop-blur-sm transition-colors ${
+        aria-label={label}
+        className={`flex w-full items-center justify-between gap-2 rounded-xl border bg-white/5 py-2.5 ps-4 pe-3 text-start font-medium uppercase tracking-tight text-white backdrop-blur-sm transition-colors ${
           open
             ? "border-white/70 bg-white/10"
             : "border-white/25 hover:border-white/50 hover:bg-white/10"
@@ -224,8 +190,8 @@ const SizeSelect = ({ options, value, onChange }) => {
           never blocks the trigger. */}
       <ul
         role="listbox"
-        aria-label="Sizes"
-        className={`absolute bottom-full left-0 z-50 mb-2 w-max min-w-full max-w-[min(20rem,calc(100vw-2rem))] origin-bottom overflow-hidden rounded-xl border border-white/15 bg-neutral-900/90 p-1 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out ${
+        aria-label={listLabel}
+        className={`absolute bottom-full start-0 z-50 mb-2 w-max min-w-full max-w-[min(20rem,calc(100vw-2rem))] origin-bottom overflow-hidden rounded-xl border border-white/15 bg-neutral-900/90 p-1 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out ${
           open
             ? "pointer-events-auto scale-100 opacity-100"
             : "pointer-events-none scale-95 opacity-0"
@@ -240,7 +206,7 @@ const SizeSelect = ({ options, value, onChange }) => {
                 type="button"
                 onClick={() => select(i)}
                 onMouseEnter={() => setActiveIndex(i)}
-                className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left font-medium uppercase tracking-tight transition-colors ${
+                className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-start font-medium uppercase tracking-tight transition-colors ${
                   selected
                     ? "text-[#EF4123]"
                     : active
@@ -265,10 +231,19 @@ const FLIPPED_IMAGES = new Set(["/airbrone1.png"]);
 const flipClass = (src) => (FLIPPED_IMAGES.has(src) ? "-scale-x-100" : "");
 
 const ProductShowcase = ({ product = "riot" }) => {
-  const data = PRODUCTS[product] ?? PRODUCTS.riot;
+  const { t, href } = useI18n();
+
+  const media = PRODUCT_MEDIA[product] ?? PRODUCT_MEDIA.riot;
+  const key = PRODUCT_MEDIA[product] ? product : "riot";
+  const name = t(`productShowcase.products.${key}.name`);
+  const colors = t(`productShowcase.products.${key}.colors`);
+  const sizes = t(`productShowcase.products.${key}.sizes`);
+
   const [image, setImage] = useState(0);
   const [color, setColor] = useState(0);
   const [size, setSize] = useState(0);
+
+  const fullName = name.join(" ");
 
   return (
     <section
@@ -276,7 +251,7 @@ const ProductShowcase = ({ product = "riot" }) => {
       // gradient horizontally, but leaves the vertical axis unclipped so the size
       // dropdown can float above the bottom bar.
       className="relative flex min-h-svh w-full flex-col overflow-x-clip text-black"
-      aria-label={`${data.name.join(" ")} product`}
+      aria-label={t("productShowcase.productAria").replace("{name}", fullName)}
       // Soft light-grey radial canvas: bright at the centre, darker to the
       // edges — lets the background-less render sit cleanly.
       style={{
@@ -294,12 +269,15 @@ const ProductShowcase = ({ product = "riot" }) => {
           renders into the big picture below. Wraps on small screens so
           products with 5–6 thumbnails don't overflow the width. */}
       <div className="relative flex flex-wrap justify-center gap-2 px-6 pt-50 md:flex-nowrap md:gap-3 md:pt-40 xl:pt-20">
-        {data.images.map((src, i) => (
+        {media.images.map((src, i) => (
           <button
             key={src}
             type="button"
             onClick={() => setImage(i)}
-            aria-label={`View ${i + 1}`}
+            aria-label={t("productShowcase.viewImage").replace(
+              "{index}",
+              i + 1,
+            )}
             aria-pressed={i === image}
             className={`relative h-14 w-14 overflow-hidden rounded-md border bg-white/60 backdrop-blur-sm transition-all md:h-16 md:w-16 ${
               i === image
@@ -322,11 +300,11 @@ const ProductShowcase = ({ product = "riot" }) => {
       <div className="flex flex-1 items-center justify-center px-6 pt-2 pb-6">
         <div className="relative aspect-[16/10] w-full max-w-5xl">
           <Image
-            src={data.images[image]}
-            alt={`${data.name.join(" ")} helmet`}
+            src={media.images[image]}
+            alt={t("productShowcase.helmetAlt").replace("{name}", fullName)}
             fill
             priority
-            className={`object-contain ${flipClass(data.images[image])}`}
+            className={`object-contain ${flipClass(media.images[image])}`}
             sizes="(min-width: 768px) 70vw, 92vw"
           />
         </div>
@@ -341,9 +319,7 @@ const ProductShowcase = ({ product = "riot" }) => {
             <Cell className="sm:col-span-3 xl:col-span-1">
               <div className="flex  items-start gap-3 md:flex-nowrap">
                 <h1 className="text-[22px] font-medium uppercase leading-[1.0] tracking-tight md:text-[50px]">
-                  {data.name[0]}
-                  <br />
-                  {data.name[1]}
+                  <Lines lines={name} />
                 </h1>
                 <Image
                   src="/shield.svg"
@@ -353,73 +329,69 @@ const ProductShowcase = ({ product = "riot" }) => {
                   className="mt-0.5 h-11 w-11 shrink-0 md:h-14 md:w-14"
                 />
                 <Link
-                  href="/contact"
-                  className="  ml-auto shrink-0 rounded-lg bg-white px-6 py-3 text-[13px] font-bold uppercase tracking-tight text-[#EF4123] transition-colors hover:bg-neutral-100"
+                  href={href("/contact")}
+                  className="  ms-auto shrink-0 rounded-lg bg-white px-6 py-3 text-[13px] font-bold uppercase tracking-tight text-[#EF4123] transition-colors hover:bg-neutral-100"
                 >
-                  Contact us
+                  {t("common.contactUs")}
                 </Link>
               </div>
               <p className="mt-4 max-w-md text-[12px] leading-relaxed text-neutral-300">
-                {data.description}
+                {t(`productShowcase.products.${key}.description`)}
               </p>
             </Cell>
 
             {/* 2 — helmet colour. Leftmost of the 3-across row (top rule only);
-                at xl it joins the single row with a left rule. */}
-            <Cell border="border-t xl:border-l xl:border-t-0">
+                at xl it joins the single row with a leading rule. */}
+            <Cell border="border-t xl:border-s xl:border-t-0">
               <Label>
-                Helmet
-                <br />
-                Color
+                <Lines lines={t("productShowcase.helmetColor")} />
               </Label>
               <div className="mt-4 flex items-center gap-3">
-                {data.colors.map((c, i) => (
+                {colors.map((colorName, i) => (
                   <button
-                    key={c.name}
+                    key={colorName}
                     type="button"
                     onClick={() => setColor(i)}
-                    aria-label={c.name}
+                    aria-label={colorName}
                     aria-pressed={i === color}
                     className={`h-5 w-5 rounded-full border transition-all ${
                       i === color
                         ? "border-white ring-2 ring-white/40 ring-offset-2 ring-offset-transparent"
                         : "border-white/40 hover:border-white"
                     }`}
-                    style={{ backgroundColor: c.hex }}
+                    style={{ backgroundColor: media.colorHexes[i] }}
                   />
                 ))}
               </div>
             </Cell>
 
-            {/* 3 — sizes. Middle of the 3-across row (top + left rule), same at
-                xl. */}
-            <Cell border="border-t sm:border-l xl:border-t-0">
+            {/* 3 — sizes. Middle of the 3-across row (top + leading rule), same
+                at xl. */}
+            <Cell border="border-t sm:border-s xl:border-t-0">
               <Label>
-                Different
-                <br />
-                Sizes
+                <Lines lines={t("productShowcase.differentSizes")} />
               </Label>
               <SizeSelect
-                options={data.sizes}
+                options={sizes}
                 value={size}
                 onChange={setSize}
+                label={t("productShowcase.selectSize")}
+                listLabel={t("productShowcase.sizesLabel")}
               />
             </Cell>
 
-            {/* 4 — in the box. Rightmost of the 3-across row (top + left rule),
-                same at xl. */}
+            {/* 4 — in the box. Rightmost of the 3-across row (top + leading
+                rule), same at xl. */}
             <Cell
-              border="border-t sm:border-l xl:border-t-0"
+              border="border-t sm:border-s xl:border-t-0"
               className="flex items-center justify-between gap-3"
             >
-              <div className="text-right md:ml-auto">
+              <div className="text-end md:ms-auto">
                 <Label>
-                  In the
-                  <br />
-                  Box
+                  <Lines lines={t("productShowcase.inTheBox")} />
                 </Label>
                 <p className="mt-4 whitespace-pre-line font-medium uppercase leading-relaxed text-neutral-300">
-                  {data.inTheBox}
+                  {t(`productShowcase.products.${key}.inTheBox`)}
                 </p>
               </div>
               <Image

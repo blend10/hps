@@ -1,0 +1,727 @@
+{
+  "common": {
+    "contactUs": "Contact us",
+    "learnMore": "Learn more",
+    "getInTouch": "Get in touch",
+    "goToTop": "Go to top",
+    "skipToContent": "Skip to content",
+    "scrollToExplore": "Scroll to explore",
+    "scrollDown": "Scroll down",
+    "comingSoon": "Coming soon",
+    "faq": "FAQ",
+    "optional": "Optional",
+    "previous": "Previous",
+    "next": "Next",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "playVideo": "Play video",
+    "hpsBadge": "HPS Badge",
+    "homeAria": "High Protection Systems — home"
+  },
+
+  "metadata": {
+    "titleTemplate": "%s | High Protection Systems",
+    "defaultTitle": "High Protection Systems — Ballistic & Tactical Helmets",
+    "description": "HPS delivers next-generation ballistic and tactical helmets engineered for elite military, law enforcement, and special forces — built on motorsport safety excellence.",
+    "keywords": [
+      "ballistic helmet",
+      "tactical helmet",
+      "riot helmet",
+      "SWAT helmet",
+      "aviation helmet",
+      "military head protection",
+      "law enforcement helmet",
+      "High Protection Systems"
+    ],
+    "home": {
+      "srHeading": "High Protection Systems — Ballistic and Tactical Helmets for Military, Law Enforcement, and Aviation"
+    },
+    "aboutUs": {
+      "title": "About Us",
+      "description": "High Protection Systems adapts motorsport-proven safety engineering into ballistic and tactical head protection for defence, law enforcement, and aviation."
+    },
+    "company": {
+      "title": "Company Overview",
+      "description": "Who HPS is, where we're based, and the industries we serve — a manufacturer of high-performance ballistic and blast-protective equipment."
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "description": "Contact HPS for product specifications, procurement, certifications, and partnership enquiries. Supplied exclusively to government entities, official agencies, and licensed defence distributors."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Answers about HPS products, technology, certifications, and procurement — from materials and standards to demonstrations and lead times."
+    },
+    "motorsportHeritage": {
+      "title": "Motorsport Heritage",
+      "description": "From Bell Helmets in 1954 to Grosjean walking out of a 190mph fireball — the motorsport safety legacy that HPS carries into ballistic and tactical protection."
+    },
+    "news": {
+      "title": "Latest News",
+      "description": "News, press releases, and events from High Protection Systems — including our presence at global defence exhibitions."
+    },
+    "products": {
+      "title": "Products",
+      "description": "Explore the HPS range of ballistic and tactical helmets — the Riot RH1.0, the Gladiator SWAT helmet, and the Lift Airborne AV2.2 aviation helmet.",
+      "ogDescription": "Ballistic and tactical head-protection systems engineered for military, law enforcement, and aviation."
+    },
+    "product": {
+      "riot": {
+        "name": "Riot Helmet 1.0 (RH1.0)",
+        "category": "Riot / Public Order Helmet",
+        "description": "The RH1.0 is a high-end head protection for crowd-control applications, with a helmet-mask combination interface and F1-proven EPS for excellent shock and stab protection."
+      },
+      "gladiator": {
+        "name": "Gladiator SWAT Helmet",
+        "category": "Ballistic / Tactical Helmet",
+        "description": "The newest generation of SWAT helmets — a lightweight aramid sandwich shell tested to VPAM HVN 2009 and NATO STANAG AEP-2920, with optimised balance and comfort."
+      },
+      "airborne": {
+        "name": "Lift Airborne AV2.2",
+        "category": "Aviation Helmet",
+        "description": "A Next Generation Fixed Wing Helmet (NGFWH): the lightest, most breathable design with a prepreg carbon-fibre shell, Koroyd/EPS impact liner, and modular NVG/JHMCS integration."
+      }
+    }
+  },
+
+  "header": {
+    "brandOf": "A brand of Racing Force",
+    "products": "Products",
+    "selectLanguage": "Select language",
+    "languageListLabel": "Language",
+    "expandMenu": "Expand menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "closePanel": "Close navigation panel",
+    "companyOverview": "Company Overview",
+    "productMenu": {
+      "riot": {
+        "title": "RIOT",
+        "description": "The RH1.0 is a high-end head protection for crowd control application."
+      },
+      "gladiator": {
+        "title": "Gladiator",
+        "description": "The GLADIATOR is the newest generation of SWAT-helmets."
+      },
+      "airborne": {
+        "title": "Lift Airborne AV2.2",
+        "description": "Designed for airborne forces, combat aviators, and special operations pilots."
+      }
+    },
+    "sections": {
+      "hps": "HPS",
+      "products": "Products",
+      "technology": "Our Technology",
+      "latestNews": "Latest News",
+      "contactUs": "Contact Us"
+    },
+    "links": {
+      "aboutUs": "About Us",
+      "motorsportHeritage": "Motorsport Heritage",
+      "careers": "Careers",
+      "gladiator": "Gladiator",
+      "riotHelmet": "Riot Helmet 1.0",
+      "liftAirborne": "Lift Airborne AV2.2",
+      "certifications": "Certifications & Standards",
+      "research": "R&D and Testing",
+      "impactAbsorption": "Impact Absorption",
+      "hpsShow": "HPS Show",
+      "pressRelease": "Press Release",
+      "events": "Events",
+      "getInTouch": "Get in Touch"
+    }
+  },
+
+  "footer": {
+    "statement": "HPS delivers next-generation ballistic and tactical helmets engineered for elite military, law enforcement, and special forces. Built on motorsport safety excellence and proven through thousands of real-world operations.",
+    "linkedinAria": "HPS on LinkedIn",
+    "columns": {
+      "company": {
+        "title": "Company",
+        "aboutHps": "About HPS",
+        "ourTechnology": "Our Technology",
+        "careers": "Careers"
+      },
+      "products": {
+        "title": "Products",
+        "gladiator": "Gladiator",
+        "riotHelmet": "Riot Helmet 1.0",
+        "liftAirborne": "Lift Airborne AV2.2"
+      },
+      "getInTouch": {
+        "title": "Get in Touch",
+        "latestNews": "Latest News",
+        "contactUs": "Contact Us"
+      }
+    },
+    "copyright": "© High Protection Systems 2026 — All Rights Reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+
+  "hero": {
+    "home": {
+      "headline": ["Protecting", "the Best"],
+      "cta": ["Discover", "our products"]
+    },
+    "motorsport": {
+      "headline": ["Built to Survive"],
+      "story": "On 29 November 2020, Romain Grosjean walked out of a 190mph fireball. It wasn't luck. It was engineering."
+    },
+    "company": {
+      "headline": ["Everything", "About Us"],
+      "cta": "Contact us"
+    }
+  },
+
+  "high": {
+    "ariaLabel": "About High Protection Systems",
+    "lead": "High Protection Systems develops advanced ballistic and riot protection equipment",
+    "accent": "engineered for the most extreme conditions"
+  },
+
+  "frontline": {
+    "ariaLabel": "Built for frontline operations",
+    "heading": ["Built for Frontline", "operations"],
+    "imageAlt": "Tactical operator in full protective gear",
+    "intro": "Designed for modern law enforcement and tactical units, our protection systems combine advanced impact resistance, operational comfort, and mission-ready durability. Every component is engineered to perform under pressure in unpredictable and high-risk environments.",
+    "features": [
+      {
+        "id": "shock",
+        "title": "Shock absorption",
+        "body": "Engineered to disperse and reduce high-impact forces, protecting the head during collisions, riots, and tactical operations."
+      },
+      {
+        "id": "bullet",
+        "title": "Bullet resistance",
+        "body": "Designed with advanced ballistic materials to help protect against projectile threats in high-risk operational environments."
+      },
+      {
+        "id": "operational",
+        "title": "Operational fit",
+        "body": "Built for a secure and stable helmet fit that remains reliable during movement, ensuring comfort and control in extended missions."
+      }
+    ]
+  },
+
+  "mission": {
+    "default": {
+      "heading": "Protect the Mission",
+      "buttonLabel": "More about us",
+      "ariaLabel": "Protect the mission"
+    },
+    "contact": {
+      "heading": "Contact With Us",
+      "buttonLabel": "Get in touch",
+      "ariaLabel": "Contact with us"
+    }
+  },
+
+  "scrollEffect": {
+    "ariaLabel": "Riot helmet range",
+    "headline": ["Our toughest", "protective shell."],
+    "policeUse": "Police use",
+    "proLevel": "Pro-level protection",
+    "colorCount": "2 Colors",
+    "blackColourway": "Black colourway",
+    "slateColourway": "Slate colourway",
+    "heroAlt": "Officer wearing the {name} helmet and protective gear",
+    "panels": {
+      "riot": {
+        "name": "RIOT",
+        "blurb": "The RH1.0 is a high-end head protection for crowd control application. The interfaces on both sides enable the use as helmet-mask-combination while the use of tear gas. The lightweight aramid sandwich shell combined with F1 proven EPS features excellent shock and stab protection."
+      },
+      "gladiator": {
+        "name": "Lift Airborne AV2.2",
+        "blurb": "The Lift Airborne AV2.2 is a Next Generation Fixed Wing Helmet (NGFWH), setting a new standard as the lightest, most comfortable, and breathable design, while providing unmatched superior protection in helmet history."
+      },
+      "patrol": {
+        "name": "Gladiator",
+        "blurb": "Based on the innovative HPS design and featuring a lightweight aramid sandwich shell, developed and tested using the latest scientific knowledge, the GLADIATOR is the newest generation of SWAT-helmets according to the Technical Guideline (TR) “Ballistic helmet” overall system of May 2010 German Police University (DHPol/Police Technical Institute-PTI)."
+      }
+    }
+  },
+
+  "helmets": {
+    "ariaLabel": "Helmets",
+    "riot": "Riot",
+    "gladiator": "Gladiator",
+    "airborne": "Lift Airborne AV2.2"
+  },
+
+  "news": {
+    "ariaLabel": "Latest News",
+    "title": "Latest News",
+    "tabs": {
+      "hpsShow": "HPS Show",
+      "pressRelease": "Press Release",
+      "events": "Events"
+    },
+    "categoriesLabel": "News categories",
+    "tabPanelLabel": "{category} news",
+    "carousel": [
+      {
+        "id": "world-defence-show",
+        "title": "World Defence Show",
+        "date": "Jun / 01 / 2026",
+        "image": "/new1.jpg",
+        "excerpt": "Strong presence and key meetings with global operators and partners."
+      },
+      {
+        "id": "eurosatory",
+        "title": "World Defence Show",
+        "date": "Jun / 01 / 2026",
+        "image": "/new2.jpg",
+        "excerpt": "Strong presence and key meetings with global operators and partners."
+      },
+      {
+        "id": "milipol",
+        "title": "World Defence Show",
+        "date": "Jun / 01 / 2026",
+        "image": "/new3.jpg",
+        "excerpt": "Strong presence and key meetings with global operators and partners."
+      },
+      {
+        "id": "idex",
+        "title": "World Defence Show",
+        "date": "Jun / 01 / 2026",
+        "image": "/new4.jpg",
+        "excerpt": "Strong presence and key meetings with global operators and partners."
+      },
+      {
+        "id": "defense-expo",
+        "title": "World Defence Show",
+        "date": "Jun / 01 / 2026",
+        "image": "/new5.jpg",
+        "excerpt": "Strong presence and key meetings with global operators and partners."
+      }
+    ],
+    "grid": {
+      "hpsShow": [
+        {
+          "id": "wds-1",
+          "title": "World Defence Show",
+          "date": "Jun / 01 / 2026",
+          "image": "/new1.jpg",
+          "excerpt": "Strong presence and key meetings with global operators and partners."
+        },
+        { "id": "wds-2", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new2.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "wds-3", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new3.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "wds-4", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new4.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "wds-5", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new5.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "wds-6", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new1.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "wds-7", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new2.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "wds-8", "title": "World Defence Show", "date": "Jun / 01 / 2026", "image": "/new3.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." }
+      ],
+      "pressRelease": [
+        { "id": "pr-1", "title": "Press Release", "date": "Jun / 01 / 2026", "image": "/new4.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "pr-2", "title": "Press Release", "date": "Jun / 01 / 2026", "image": "/new5.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." }
+      ],
+      "events": [
+        { "id": "ev-1", "title": "Events", "date": "Jun / 01 / 2026", "image": "/new2.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." },
+        { "id": "ev-2", "title": "Events", "date": "Jun / 01 / 2026", "image": "/new3.jpg", "excerpt": "Strong presence and key meetings with global operators and partners." }
+      ]
+    }
+  },
+
+  "ultimate": {
+    "ariaLabel": "Built for ultimate protection",
+    "eyebrow": {
+      "brand": "HPS Gear",
+      "process": "Our Development Process",
+      "location": "Kingdom of Bahrain"
+    },
+    "heading": ["Built for ultimate", "protection"],
+    "body": "Our development process combines motorsport-proven engineering excellence with rigorous ballistic and tactical testing. Every HPS helmet is meticulously designed, tested, and refined to deliver uncompromising protection, comfort, and performance for the operators who need it most.",
+    "faq": "FAQ",
+    "features": {
+      "globalSupport": {
+        "title": "Global Support",
+        "bodyBefore": "HPS delivers worldwide to defense forces, law enforcement agencies, and authorized partners. ",
+        "linkText": "Contact our team",
+        "bodyAfter": " for tailored logistics, volume orders, and mission-specific delivery solutions."
+      },
+      "certifiedExcellence": {
+        "title": "Certified Excellence",
+        "body": "All HPS helmets meet the highest international standards (NIJ, VPAM, EN397 and more). Backed by extensive testing and Racing Force Group’s decades of safety innovation."
+      }
+    }
+  },
+
+  "aboutHero": {
+    "headline": ["Built for Your", "Protection"],
+    "panels": {
+      "motorsport": "Motorsport",
+      "aviation": "Aviation",
+      "police": "Police",
+      "gendarmerie": "Gendarmerie"
+    }
+  },
+
+  "standard": {
+    "heading": "Setting a New Standard in Protection with HPS",
+    "intro": "Racing Force Group, renowned for its legacy in motorsport safety innovation, embarked on a diversification journey following its listing in 2021. This vision gave rise to High Protection Systems SA (HPS), dedicated to adapting racing safety technologies for military and law enforcement applications.",
+    "faqButton": ["Frequently", "Asked Questions"]
+  },
+
+  "origins": {
+    "chaptersLabel": "Chapters",
+    "motorsport": {
+      "ariaLabel": "Motorsport Heritage",
+      "heading": { "line1": "Motorsport", "line2": "Heritage" },
+      "chapters": [
+        {
+          "id": "origins",
+          "nav": "The Origins of Protection",
+          "title": "The Origins of Protection",
+          "caption": "Bell Helmets · 1954",
+          "body": "Long before protection became a defence industry priority, it was a motorsport obsession. In the early days of racing, drivers took to the track with little more than leather helmets and determination. As speeds increased and the consequences of failure became undeniable, a new discipline was born — one dedicated entirely to keeping the human body alive at the limit. Bell Helmets, founded in 1954, pioneered the modern racing helmet, setting the standard for what protective equipment could and should be. That legacy of innovation — of refusing to accept that injury is inevitable — is the same philosophy that runs through everything HPS builds today."
+        },
+        {
+          "id": "the-crash",
+          "nav": "The Crash That Proved Everything",
+          "title": "The Crash That Proved Everything",
+          "caption": "Bahrain Grand Prix · 2020",
+          "body": "On 29 November 2020, at the Bahrain Grand Prix, Romain Grosjean's car split in two at over 190mph and erupted into a fireball on impact. He walked out of the flames 28 seconds later. What the world witnessed that day was not luck. It was decades of engineering, material science, and relentless testing compressed into a single, life-saving moment. The HANS device, the fireproof suit, the helmet — every layer of protection performed exactly as designed. For HPS, that moment was not a surprise. It was a proof of concept. It was the reason we exist."
+        },
+        {
+          "id": "racetrack-to-frontline",
+          "nav": "From the Racetrack to the Frontline",
+          "title": "From the Racetrack to the Frontline",
+          "caption": "From track to frontline",
+          "body": "The racetrack is the harshest laboratory on earth. No other environment demands that protective equipment withstand extreme heat, violent impact, and total structural failure all within fractions of a second. The lessons learned there — impact-absorption science and the human-fit engineering developed for Formula 1 and elite motorsport — do not disappear when the chequered flag drops. At HPS, we took that knowledge and carried it into a different question: what happens when the threat isn't a wall, but a bullet? The answer became our greatest range. Every helmet, every vest, every system we produce carries the precision and performance philosophy of motorsport in its construction."
+        },
+        {
+          "id": "minds-who-trusted-us",
+          "nav": "The Drivers Who Trusted Us",
+          "title": "The Drivers Who Trusted Us",
+          "caption": "Trusted at the limit",
+          "body": "Trust at 200mph is not given lightly. The relationship between a racing driver and their protective equipment is one of the most demanding partnerships in sport — built on data, testing, and an uncompromising standard of performance. Through our parent company Racing Force Group, HPS has been part of the protection story for some of the greatest drivers in motorsport history. That association is not a marketing footnote. It is a validation. When the best drivers in the world choose to put their lives in your hands, the standard you are held to becomes the standard you build everything else around."
+        },
+        {
+          "id": "a-legacy",
+          "nav": "A Legacy Still Being Written",
+          "title": "A Legacy Still Being Written",
+          "caption": "Since 1954",
+          "body": "Motorsport taught us that protection is never finished. Every season brings new speeds, new impacts, new data and with it, new demands on what materials and engineering must deliver. That same restlessness drives HPS forward. We are not a company content with meeting yesterday's standards. We test harder, we research deeper, and we design with the understanding that the person wearing our equipment may one day depend on it completely. The legacy of motorsport lives in every product we make — not as history, but as a standard we refuse to let slip."
+        },
+        {
+          "id": "comes-together",
+          "nav": "Where It All Comes Together",
+          "title": "Where It All Comes Together",
+          "caption": "Motorsport → Frontline",
+          "body": "The same standards that protected drivers at the highest level of motorsport are built into the walls of our facility. HPS is headquartered in Ronco Scrivia, Italy, within the Racing Force Group manufacturing campus a purpose-built environment where research, development, and production happen under one roof. Every product is designed, tested, and manufactured in-house, giving us complete control over quality at every stage. From raw material to finished equipment, nothing leaves our facility without meeting the exact tolerances our clients and our history demand."
+        }
+      ]
+    },
+    "company": {
+      "ariaLabel": "About HPS",
+      "heading": { "line1": "Company", "line2": "Overview" },
+      "chapters": [
+        {
+          "id": "who-we-are",
+          "nav": "What is High Protection Systems?",
+          "title": "What is High Protection Systems?",
+          "caption": "What is High Protection Systems?",
+          "body": "High Protection Systems (HPS) is a UK-based manufacturer specialising in high-performance protective equipment for defence, law enforcement, and security professionals. We design and produce ballistic and blast-protective solutions engineered to the most demanding operational standards."
+        },
+        {
+          "id": "our-mission",
+          "nav": "Where is HPS based?",
+          "title": "Where is HPS based?",
+          "caption": "Protecting the best",
+          "body": "HPS is headquartered in Ronco Scrivia, Italy, with manufacturing and R&D facilities supporting our global customer base."
+        },
+        {
+          "id": "our-heritage",
+          "nav": "What industries do you serve?",
+          "title": "What industries do you serve?",
+          "caption": "Since 1954",
+          "body": "We serve military and defence organisations, law enforcement agencies, private security contractors, and government bodies worldwide."
+        },
+        {
+          "id": "our-facility",
+          "nav": "Different from others!",
+          "title": "Different from others!",
+          "caption": "Ronco Scrivia, Italy",
+          "body": "We serve military and defence organisations, law enforcement agencies, private security contractors, and government bodies worldwide."
+        }
+      ]
+    }
+  },
+
+  "faq": {
+    "ariaLabel": "Frequently asked questions",
+    "heading": ["Frequently", "Asked", "Questions"],
+    "categoriesLabel": "FAQ categories",
+    "categories": [
+      {
+        "id": "about",
+        "nav": "About HPS",
+        "heading": "About HPS",
+        "items": [
+          {
+            "q": "Who is High Protection Systems?",
+            "a": "HPS designs and manufactures advanced head-protection systems, applying motorsport-grade engineering and material science to protective equipment for defence, law enforcement and aviation."
+          },
+          {
+            "q": "Where are HPS products made?",
+            "a": "Every product is designed, tested and manufactured in-house at our facility within the Racing Force Group manufacturing campus, giving us complete control over quality at every stage."
+          },
+          {
+            "q": "What makes HPS different?",
+            "a": "Our heritage is motorsport — the harshest laboratory on earth. The impact-absorption science and human-fit engineering developed there is carried into every helmet and system we build."
+          }
+        ]
+      },
+      {
+        "id": "products",
+        "nav": "Our Products",
+        "heading": "Our Products",
+        "items": [
+          {
+            "q": "What product ranges does HPS offer?",
+            "a": "Our range spans riot and public-order protection, tactical SWAT helmets, and next-generation airborne aviation helmets — each engineered for its mission environment."
+          },
+          {
+            "q": "Can products be customised?",
+            "a": "Yes. Colours, liners, visors and accessory mounting can be configured to your operational requirements. Contact us to discuss a specification."
+          },
+          {
+            "q": "Do products meet recognised standards?",
+            "a": "Our systems are developed and tested against the relevant technical guidelines and standards for each category, including VPAM, NATO STANAG and MIL-STD ratings where applicable."
+          }
+        ]
+      },
+      {
+        "id": "technology",
+        "nav": "Our Technology",
+        "heading": "Our Technology",
+        "items": [
+          {
+            "q": "What materials do HPS helmets use?",
+            "a": "Depending on the product, shells use lightweight aramid sandwich construction or prepreg carbon fibre with 100% epoxy resin, paired with Koroyd/EPS impact liners for optimised protection-to-weight."
+          },
+          {
+            "q": "How is comfort engineered?",
+            "a": "Exchangeable, moisture-wicking comfort liners in multiple thicknesses, rotary-dial fit systems and occipital support are used to customise fit for long-duration wear."
+          }
+        ]
+      },
+      {
+        "id": "certifications",
+        "nav": "Certifications & Standards",
+        "heading": "Certifications & Standards",
+        "items": [
+          {
+            "q": "Which certifications do HPS products hold?",
+            "a": "Certification varies by product line and is aligned to the applicable technical guidelines and ballistic/impact standards. We can provide the relevant documentation on request."
+          },
+          {
+            "q": "Can you provide test reports?",
+            "a": "Yes — test reports and compliance documentation are available to qualified buyers as part of a procurement enquiry."
+          }
+        ]
+      },
+      {
+        "id": "contact",
+        "nav": "Contact & Procurement",
+        "heading": "Contact & Procurement",
+        "items": [
+          {
+            "q": "How do I contact HPS?",
+            "a": "You can reach our team through the contact page. For procurement and technical enquiries, include your organisation and requirement details so we can route you to the right specialist."
+          },
+          {
+            "q": "How do I procure HPS products?",
+            "a": "Procurement is handled directly with our sales team. Get in touch with your requirement and we'll guide you through specification, quotation and lead times."
+          },
+          {
+            "q": "Does HPS offer product demonstrations?",
+            "a": "Yes. Demonstrations and evaluation units can be arranged for qualified organisations. Contact us to schedule a session."
+          },
+          {
+            "q": "What information should I include in a procurement enquiry?",
+            "a": "Please include your organisation, the product range of interest, approximate quantities, required standards or certifications, and your target timeline."
+          },
+          {
+            "q": "Does HPS attend defence exhibitions?",
+            "a": "HPS attends selected defence and law-enforcement exhibitions through the year. Reach out to find out where you can meet us next."
+          },
+          {
+            "q": "Can HPS support urgent operational requirements?",
+            "a": "Where possible, yes. Flag the urgency in your enquiry and we'll do our best to prioritise and advise on the fastest available route."
+          }
+        ]
+      }
+    ]
+  },
+
+  "contact": {
+    "ariaLabel": "Get in touch",
+    "title": "Get In Touch",
+    "intro": "Whether you are a procurement officer, tactical gear distributor, or part of a law enforcement or military agency, we’re here to support your operational needs with certified, high-performance ballistic helmets and riot control helmet systems. We welcome inquiries related to product specifications, procurement procedures, certifications, and partnership opportunities.",
+    "noticeTitle": "Important Notice ⚠",
+    "noticeBody": "We expressly point out that our tactical and protective helmets are offered exclusively to government entities, official agencies, and licensed defense distributors.",
+    "successTitle": "Thank you — your enquiry has been received.",
+    "successBody": "Our team will get back to you shortly.",
+    "labels": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "city": "City",
+      "message": "Message",
+      "identifyAs": "Identify As",
+      "addFiles": "Add Additional Files"
+    },
+    "placeholders": {
+      "firstName": "Enter your First Name...",
+      "lastName": "Enter your Last Name...",
+      "email": "Enter your Email...",
+      "phone": "Enter your Phone Number with Prefix...",
+      "country": "Enter your Country...",
+      "city": "Enter your City...",
+      "message": "Anything to add..."
+    },
+    "chooseFiles": "Choose Files",
+    "fileSelected": "{count} file selected",
+    "filesSelected": "{count} files selected",
+    "identifyOptions": [
+      "Military",
+      "Law Enforcement",
+      "Government Agency",
+      "Licensed Defense Distributor",
+      "Other"
+    ],
+    "consentBefore": "I Read and understood the ",
+    "privacyPolicy": "privacy policy",
+    "consentAfter": ", I authorize the treatment of my personal data by Racing Force S.p.A. in order to respond to my request. ",
+    "submit": "Submit"
+  },
+
+  "products": {
+    "eyebrow": "Our Products",
+    "heading": "Engineered protection, field-proven.",
+    "intro": "Every HPS system carries motorsport-grade impact science into the field. Explore the range below.",
+    "viewSystem": "View system →",
+    "items": [
+      {
+        "id": "riot",
+        "name": "Riot Helmet 1.0",
+        "category": "Public Order",
+        "description": "High-end head protection for crowd-control, with a helmet-mask combination interface and F1-proven EPS."
+      },
+      {
+        "id": "gladiator",
+        "name": "Gladiator",
+        "category": "Tactical / SWAT",
+        "description": "The newest generation of SWAT helmets — lightweight aramid sandwich shell, VPAM and NATO STANAG tested."
+      },
+      {
+        "id": "airborne",
+        "name": "Lift Airborne AV2.2",
+        "category": "Aviation",
+        "description": "A Next Generation Fixed Wing Helmet: the lightest, most breathable design with unmatched protection."
+      }
+    ]
+  },
+
+  "productShowcase": {
+    "helmetColor": ["Helmet", "Color"],
+    "differentSizes": ["Different", "Sizes"],
+    "inTheBox": ["In the", "Box"],
+    "selectSize": "Select size",
+    "sizesLabel": "Sizes",
+    "viewImage": "View {index}",
+    "productAria": "{name} product",
+    "helmetAlt": "{name} helmet",
+    "products": {
+      "riot": {
+        "name": ["Riot"],
+        "description": "The RH1.0 is a high-end head protection for crowd control application. The interfaces on both sides enable the use as helmet-mask-combination while the use of tear gas.",
+        "colors": ["Black", "Slate"],
+        "sizes": ["SHELL SIZE 1 / 46,47", "SHELL SIZE 2 / 48,49", "SHELL SIZE 3 / 50,51"],
+        "inTheBox": "RH 1.0 INCL. VISOR, DRAW STRING\nHELMET BAG, MANUAL"
+      },
+      "gladiator": {
+        "name": ["Gladiator"],
+        "description": "Based on the innovative HPS design and featuring a lightweight aramid sandwich shell, developed and tested using the latest scientific knowledge, the GLADIATOR is the newest generation of SWAT-helmets",
+        "colors": ["Black", "Coyote"],
+        "sizes": ["SHELL SIZE 1 / 46,47", "SHELL SIZE 2 / 48,49", "SHELL SIZE 3 / 50,51"],
+        "inTheBox": "RH 1.0 INCL. RAILS, DRAW STRING\nHELMET BAG, MANUAL"
+      },
+      "airborne": {
+        "name": ["Lift Airborne", "AV2.2OT"],
+        "description": "The Lift Airborne AV2.2 is a Next Generation Fixed Wing Helmet (NGFWH), setting a new standard as the lightest, most comfortable, and breathable design, while providing unmatched superior protection in helmet history.",
+        "colors": ["Black"],
+        "sizes": ["SHELL SIZE 1 / 46,47", "SHELL SIZE 2 / 48,49", "SHELL SIZE 3 / 50,51"],
+        "inTheBox": "RH 1.0 INCL. VISOR, DRAW STRING\nHELMET BAG, MANUAL"
+      }
+    }
+  },
+
+  "productDetails": {
+    "detailsAria": "{name} details",
+    "inTheBox": "In the Box",
+    "accessories": "Accessories",
+    "keyFeatures": "Key Features",
+    "uponRequest": "For other accessories upon request",
+    "accessoryNames": {
+      "placeholder": "Lorem Ipsum",
+      "neckProtector": "Neck Protector",
+      "helmetBag": "Helmet Bag"
+    },
+    "products": {
+      "riot": {
+        "name": "Riot",
+        "description": "The RH1.0 is a high-end head protection for crowd control application. The interfaces on both sides enable the use as helmet-mask-combination while the use of tear gas. The lightweight aramid sandwich shell combined with F1 proven EPS features excellent shock and stab protection. Flame resistant coating and inherent flame-retardant textile materials protect against the Molotov cocktail threat. The RH1.0 is the newest helmet developed according to the generation of Riot-helmets according to the Technical Guideline (TR) for a Modular System “Protective Helmet, Communication System, Respirator Mask” of February 2011 German Police University (DHPol/Police Technical Institute-PTI).",
+        "inTheBox": ["RH 1.0 incl. Visor", "Draw String Helmet Bag", "Manual Book."],
+        "keyFeatures": [
+          "Lightweight aramid sandwich shell with FR coating for optimized shock and stab protection.",
+          "3 shell sizes for lowest possible weight.",
+          "Exchangeable anti-bacterial finished, inherent flame-retardant Nomex®-Lycra lining for highest comfort.",
+          "Inherent flame-resistant Nomex® 3-point chinstrap with FR micro-lock ratchet fastener and emergency opening.",
+          "Clear injection molded visor with F1 proven anti-fog (inside) and anti-scratch (outside) technology.",
+          "Special visor fixing for tool free visor exchange.",
+          "Aramid stab protection neck protector with flame-retardant PU-coated aramid cover, integrated D-ring for wearing on the tactical equipment.",
+          "Color (FR): White, Black blue, Black other colors upon request."
+        ]
+      },
+      "gladiator": {
+        "name": "Gladiator",
+        "description": "Based on the innovative HPS design and featuring a lightweight aramid sandwich shell, developed and tested using the latest scientific knowledge, the GLADIATOR is the newest generation of SWAT-helmets according to the Technical Guideline (TR) “Ballistic helmet” overall system of May 2010 German Police University (DHPol/Police Technical Institute-PTI), VPAM: HVN 2009 “Test Guideline Bullet-resistant helmet with visor and neck guard” of April 04, 2017 and NATO STANDARD (STANAG) AEP-2920. GLADIATOR is a new benchmark for safety, reduced weight, optimized balance and comfort",
+        "inTheBox": ["GLADIATOR incl. Visor", "Draw String Helmet Bag", "Manual Book."],
+        "keyFeatures": [
+          "Lightweight aramid sandwich shell for VPAM 3 protection with minimum trauma.",
+          "2 shell sizes for lowest possible weight.",
+          "New designed NVG shroud.",
+          "Liner with quick size adjustment.",
+          "Inherent flame-resistant Nomex® chinstrap with F1 double D-ring fastener and proven emergency opening system.",
+          "Optimized ballistic visor with new designed visor pivoting system for best balance (4 visor positions).",
+          "Visor with F1 proven anti-fog (inside) and anti-scratch (outside) technology.",
+          "Visor Quick Exchange System.",
+          "Metallic Picatinny rails for accessory mounting.",
+          "Compatible and tested with CBRN masks and headsets in SWAT use.",
+          "Color (FR): Black, Blackblue, Browngrey, other colors upon request."
+        ]
+      },
+      "airborne": {
+        "name": "Lift Airborne AV2.2",
+        "description": "The Lift Airborne AV2.2 is a Next Generation Fixed Wing Helmet (NGFWH), setting a new standard as the lightest, most comfortable, and breathable design, while providing unmatched superior protection in helmet history. Developed by LIFT Airborne Technologies, this helmet delivers unmatched strength, modularity, and pilot-centered functionality in high-performance aviation environments. With a focus on breathability, stability, and ergonomic design, the AV2.2 combines intelligent airflow systems, quick-adjust fit mechanisms, and innovative materials to support mission-critical performance. It’s engineered to exceed current standards for fixed-wing aircraft helmets, while offering compatibility with a variety of mission setups and tactical systems. Designed for airborne forces, combat aviators, and special operations pilots, the AV2.2 supports extended missions with lightweight comfort, moisture control, and seamless modular integrations — including NVG, JHMCS, and dual-visor configurations.",
+        "inTheBox": ["RH 1.0 incl. Visor", "Draw String Helmet Bag", "Manual Book."],
+        "keyFeatures": [
+          "Shell Construction: Built with prepreg carbon fiber and 100% epoxy resin (chemically inert) for durability, impact performance, and ultra-lightweight strength. The shell design improves balance, stability, and field of vision, with a high-cut rear to accommodate life preservers.",
+          "Impact Protection: Features a Koroyd and EPS frame liner, combining exceptional impact resistance with airflow-enhancing cooling properties.",
+          "Comfort Liner: Includes Drifire moisture-wicking fabric and open-cell foam, available in multiple thicknesses to customize fit and comfort for long-duration missions.",
+          "Innovative Fit System: Equipped with a rotary dial fit knob, enhanced nape pads, and occipital support basket for superior helmet stability and adjustment during flight.",
+          "Chinstrap Assembly: Magnetic aramid/nylon strap with a high-strength buckle rated to 438 lbs of force — designed for fast application and maximum retention.",
+          "Rotatable Bayonet Receivers: Offers up to 45° of tool-free adjustment per side for adaptable, drill-free customization.",
+          "Dual Visor System: Includes a MIL-STD-rated visor (600 KEAS) and a secondary magnetic visor in multiple tints for mission-specific needs.",
+          "Modular Configuration: Seamless compatibility with multiple setups Slick, Slick with NVG, JHMCS, and JHMCS + NV, all without requiring additional helmet modification."
+        ]
+      }
+    }
+  }
+}

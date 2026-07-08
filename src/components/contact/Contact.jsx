@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import FullWidthRule from "@/components/general/FullWidthRule";
+import { useI18n } from "@/i18n/client";
 
 // "Contact" — the "Get In Touch" enquiry form. A centered, single-column form
 // on black with orange (#EF4123) accents, matching the HPS contact mock:
@@ -14,14 +15,6 @@ import FullWidthRule from "@/components/general/FullWidthRule";
 // The form is controlled and self-contained. On submit it currently just shows
 // a local success state (no backend endpoint exists yet) — swap the body of
 // `handleSubmit` for a fetch to your API when it's ready.
-
-const IDENTIFY_OPTIONS = [
-  "Military",
-  "Law Enforcement",
-  "Government Agency",
-  "Licensed Defense Distributor",
-  "Other",
-];
 
 // Small uppercase field label used above every input.
 const FieldLabel = ({ htmlFor, children }) => (
@@ -68,7 +61,7 @@ const Select = ({ value, options, onChange, id }) => {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className={`${inputClass} flex items-center justify-between text-left ${
+        className={`${inputClass} flex items-center justify-between text-start ${
           open ? "border-[#EF4123]" : ""
         }`}
       >
@@ -92,7 +85,7 @@ const Select = ({ value, options, onChange, id }) => {
       {/* Floating options panel. */}
       <ul
         role="listbox"
-        className={`absolute left-0 right-0 z-20 mt-2 origin-top overflow-hidden rounded-md border border-white/10 bg-[#2a2a2a] shadow-2xl transition-all duration-200 ${
+        className={`absolute start-0 end-0 z-20 mt-2 origin-top overflow-hidden rounded-md border border-white/10 bg-[#2a2a2a] shadow-2xl transition-all duration-200 ${
           open
             ? "pointer-events-auto scale-100 opacity-100"
             : "pointer-events-none scale-95 opacity-0"
@@ -108,7 +101,7 @@ const Select = ({ value, options, onChange, id }) => {
                   onChange(opt);
                   setOpen(false);
                 }}
-                className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-[14px] transition-colors ${
+                className={`flex w-full items-center justify-between px-4 py-2.5 text-start text-[14px] transition-colors ${
                   selected
                     ? "bg-[#EF4123]/15 text-[#EF4123]"
                     : "text-neutral-200 hover:bg-white/5"
@@ -139,6 +132,9 @@ const Select = ({ value, options, onChange, id }) => {
 };
 
 const Contact = () => {
+  const { t, href } = useI18n();
+  const identifyOptions = t("contact.identifyOptions");
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -147,7 +143,7 @@ const Contact = () => {
     country: "",
     city: "",
     message: "",
-    identifyAs: IDENTIFY_OPTIONS[0],
+    identifyAs: identifyOptions[0],
     consent: false,
   });
   const [files, setFiles] = useState([]);
@@ -171,41 +167,41 @@ const Contact = () => {
     setSubmitted(true);
   };
 
+  // English pluralises with a trailing "s"; German and Arabic do not, so the
+  // singular and plural forms are separate keys rather than a runtime suffix.
+  const fileCountLabel =
+    files.length === 1
+      ? t("contact.fileSelected").replace("{count}", files.length)
+      : t("contact.filesSelected").replace("{count}", files.length);
+
   return (
-    <section className="bg-black text-white" aria-label="Get in touch">
+    <section className="bg-black text-white" aria-label={t("contact.ariaLabel")}>
       <div className="mx-auto max-w-2xl px-6 py-24 md:px-8 pt-60 border border-white/20 border-dashed">
         {/* Header — bracketed title + intro + important notice. */}
         <div className="text-center  pb-12">
           <div className="relative inline-block px-5 py-2">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute left-0 top-0 h-6 w-6 border-l-4 border-t-4 border-[#EF4123] md:h-8 md:w-8"
+              className="pointer-events-none absolute start-0 top-0 h-6 w-6 border-s-4 border-t-4 border-[#EF4123] md:h-8 md:w-8"
             />
             <h2 className="text-4xl font-medium tracking-tight md:text-[100px]">
-              Get In Touch
+              {t("contact.title")}
             </h2>
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute bottom-0 right-0 h-6 w-6 border-b-4 border-r-4 border-[#EF4123] md:h-8 md:w-8"
+              className="pointer-events-none absolute bottom-0 end-0 h-6 w-6 border-b-4 border-e-4 border-[#EF4123] md:h-8 md:w-8"
             />
           </div>
 
           <p className="mx-auto mt-6 max-w-4xl text-[18px] leading-relaxed text-white">
-            Whether you are a procurement officer, tactical gear distributor, or
-            part of a law enforcement or military agency, we’re here to support
-            your operational needs with certified, high-performance ballistic
-            helmets and riot control helmet systems. We welcome inquiries
-            related to product specifications, procurement procedures,
-            certifications, and partnership opportunities.
+            {t("contact.intro")}
           </p>
 
           <p className="mt-6 text-[20px] font-semibold uppercase tracking-wide text-[#EF4123]">
-            Important Notice ⚠
+            {t("contact.noticeTitle")}
           </p>
           <p className="mx-auto mt-2 max-w-2xl text-[16px] italic leading-relaxed text-[#EF4123]/90">
-            We expressly point out that our tactical and protective helmets are
-            offered exclusively to government entities, official agencies, and
-            licensed defense distributors.
+            {t("contact.noticeBody")}
           </p>
         </div>
         <FullWidthRule />
@@ -217,11 +213,9 @@ const Contact = () => {
             aria-live="polite"
             className="mt-14 rounded-md border border-[#EF4123]/40 bg-[#2a2a2a] px-6 py-10 text-center"
           >
-            <p className="text-lg font-medium">
-              Thank you — your enquiry has been received.
-            </p>
+            <p className="text-lg font-medium">{t("contact.successTitle")}</p>
             <p className="mt-2 text-[13px] text-neutral-400">
-              Our team will get back to you shortly.
+              {t("contact.successBody")}
             </p>
           </div>
         ) : (
@@ -229,25 +223,29 @@ const Contact = () => {
             {/* First / Last name */}
             <div className="grid grid-cols-1 tracking-tight gap-6 sm:grid-cols-2">
               <div>
-                <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                <FieldLabel htmlFor="firstName">
+                  {t("contact.labels.firstName")}
+                </FieldLabel>
                 <input
                   id="firstName"
                   type="text"
                   value={form.firstName}
                   onChange={update("firstName")}
-                  placeholder="Enter your First Name..."
+                  placeholder={t("contact.placeholders.firstName")}
                   className={inputClass}
                   required
                 />
               </div>
               <div>
-                <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                <FieldLabel htmlFor="lastName">
+                  {t("contact.labels.lastName")}
+                </FieldLabel>
                 <input
                   id="lastName"
                   type="text"
                   value={form.lastName}
                   onChange={update("lastName")}
-                  placeholder="Enter your Last Name..."
+                  placeholder={t("contact.placeholders.lastName")}
                   className={inputClass}
                   required
                 />
@@ -257,26 +255,33 @@ const Contact = () => {
             {/* Email / Phone */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">
+                  {t("contact.labels.email")}
+                </FieldLabel>
                 <input
                   id="email"
                   type="email"
                   value={form.email}
                   onChange={update("email")}
-                  placeholder="Enter your Email..."
+                  placeholder={t("contact.placeholders.email")}
                   className={inputClass}
+                  // Email addresses are always LTR, even on an RTL page.
+                  dir="ltr"
                   required
                 />
               </div>
               <div>
-                <FieldLabel htmlFor="phone">Phone</FieldLabel>
+                <FieldLabel htmlFor="phone">
+                  {t("contact.labels.phone")}
+                </FieldLabel>
                 <input
                   id="phone"
                   type="tel"
                   value={form.phone}
                   onChange={update("phone")}
-                  placeholder="Enter your Phone Number with Prefix..."
+                  placeholder={t("contact.placeholders.phone")}
                   className={inputClass}
+                  dir="ltr"
                 />
               </div>
             </div>
@@ -284,24 +289,28 @@ const Contact = () => {
             {/* Country / City */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <FieldLabel htmlFor="country">Country</FieldLabel>
+                <FieldLabel htmlFor="country">
+                  {t("contact.labels.country")}
+                </FieldLabel>
                 <input
                   id="country"
                   type="text"
                   value={form.country}
                   onChange={update("country")}
-                  placeholder="Enter your Country..."
+                  placeholder={t("contact.placeholders.country")}
                   className={inputClass}
                 />
               </div>
               <div>
-                <FieldLabel htmlFor="city">City</FieldLabel>
+                <FieldLabel htmlFor="city">
+                  {t("contact.labels.city")}
+                </FieldLabel>
                 <input
                   id="city"
                   type="text"
                   value={form.city}
                   onChange={update("city")}
-                  placeholder="Enter your City..."
+                  placeholder={t("contact.placeholders.city")}
                   className={inputClass}
                 />
               </div>
@@ -309,24 +318,28 @@ const Contact = () => {
 
             {/* Message */}
             <div>
-              <FieldLabel htmlFor="message">Message</FieldLabel>
+              <FieldLabel htmlFor="message">
+                {t("contact.labels.message")}
+              </FieldLabel>
               <textarea
                 id="message"
                 rows={6}
                 value={form.message}
                 onChange={update("message")}
-                placeholder="Anything to add..."
+                placeholder={t("contact.placeholders.message")}
                 className={`${inputClass} resize-y`}
               />
             </div>
 
             {/* Identify as — custom modern dropdown. */}
             <div>
-              <FieldLabel htmlFor="identifyAs">Identify As</FieldLabel>
+              <FieldLabel htmlFor="identifyAs">
+                {t("contact.labels.identifyAs")}
+              </FieldLabel>
               <Select
                 id="identifyAs"
                 value={form.identifyAs}
-                options={IDENTIFY_OPTIONS}
+                options={identifyOptions}
                 onChange={(val) => setForm((f) => ({ ...f, identifyAs: val }))}
               />
             </div>
@@ -334,9 +347,11 @@ const Contact = () => {
             {/* Add additional files */}
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <FieldLabel htmlFor="files">Add Additional Files</FieldLabel>
+                <FieldLabel htmlFor="files">
+                  {t("contact.labels.addFiles")}
+                </FieldLabel>
                 <span className="text-[11px] font-semibold uppercase tracking-tight text-neutral-500">
-                  Optional
+                  {t("common.optional")}
                 </span>
               </div>
               <button
@@ -355,9 +370,7 @@ const Contact = () => {
                     className="h-20 w-20 brightness-80 invert"
                   />
                   <span className="text-[16px] font-semibold uppercase tracking-tight text-neutral-400">
-                    {files.length > 0
-                      ? `${files.length} file${files.length > 1 ? "s" : ""} selected`
-                      : "Choose Files"}
+                    {files.length > 0 ? fileCountLabel : t("contact.chooseFiles")}
                   </span>
                 </div>
               </button>
@@ -380,16 +393,17 @@ const Contact = () => {
                 required
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[#EF4123]"
               />
+              {/* The sentence wraps a link, so it is stored as three fragments
+                  the translator can re-order the wording around. */}
               <span>
-                I Read and understood the{" "}
+                {t("contact.consentBefore")}
                 <Link
-                  href="/privacy"
+                  href={href("/privacy")}
                   className="text-[#EF4123] hover:underline"
                 >
-                  privacy policy
+                  {t("contact.privacyPolicy")}
                 </Link>
-                , I authorize the treatment of my personal data by Racing Force
-                S.p.A. in order to respond to my request.{" "}
+                {t("contact.consentAfter")}
                 <span className="text-[#EF4123]">*</span>
               </span>
             </label>
@@ -399,7 +413,7 @@ const Contact = () => {
               type="submit"
               className="w-full rounded-md bg-white py-3.5 text-[13px] font-bold uppercase tracking-tight text-[#EF4123] transition-colors hover:bg-neutral-200"
             >
-              Submit
+              {t("contact.submit")}
             </button>
           </form>
         )}

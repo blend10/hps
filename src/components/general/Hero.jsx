@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { useEffect, useRef } from "react";
+import { useI18n } from "@/i18n/client";
+import Lines from "./Lines";
 
 // Full-viewport hero with an autoplaying, muted, looping background video.
 // The "opening" reveal: the video appears as a small 1000×400 rounded frame,
@@ -13,8 +15,13 @@ import { useEffect, useRef } from "react";
 // global nav slides in (Header.jsx → .header-intro). The whole sequence is
 // pure CSS so it plays on first paint without waiting for hydration, and is
 // neutralised under prefers-reduced-motion.
+
+// Headlines are stored per variant as an array of lines (see ./Lines) so each
+// locale can break them where its own words allow — German compounds run long,
+// Arabic runs short — instead of inheriting the English line breaks.
 const Hero = ({ variant = "home" }) => {
   const videoRef = useRef(null);
+  const { t, href } = useI18n();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -90,17 +97,23 @@ const Hero = ({ variant = "home" }) => {
             <div className="flex items-center gap-3">
               <Image
                 src="/arrowdown1.svg"
-                alt="Scroll down"
+                alt=""
+                aria-hidden="true"
                 width={15}
                 height={15}
                 className="animate-bounce"
               />
               <span className="font-medium uppercase tracking-tight text-[#EF4123]">
-                SCROLL TO EXPLORE
+                {t("common.scrollToExplore")}
               </span>
             </div>
 
-            <Image src="/shield.svg" alt="HPS Badge" width={40} height={40} />
+            <Image
+              src="/shield.svg"
+              alt={t("common.hpsBadge")}
+              width={40}
+              height={40}
+            />
           </div>
 
           {/* Bracketed headline */}
@@ -108,54 +121,39 @@ const Hero = ({ variant = "home" }) => {
             <div className="relative px-5 py-3 md:px-7 md:py-4">
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-0 h-7 w-7 border-l-4 md:boder-l-8 border-t-4 md:border-t-8 border-white md:h-10 md:w-10"
+                className="pointer-events-none absolute start-0 top-0 h-7 w-7 border-s-4 md:border-s-8 border-t-4 md:border-t-8 border-white md:h-10 md:w-10"
               />
               <h2 className="text-center text-4xl font-medium tracking-tight text-white sm:text-5xl md:text-[90px]">
-                {variant === "motorsport" ? (
-                  "Built to Survive"
-                ) : variant === "company" ? (
-                  <>
-                    Everything
-                    <br />
-                    About Us
-                  </>
-                ) : (
-                  <>
-                    Protecting
-                    <br />
-                    the Best
-                  </>
-                )}
+                <Lines lines={t(`hero.${variant}.headline`)} />
               </h2>
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 right-0 h-7 w-7 border-b-4 md:border-b-8 border-r-4 md:border-r-8 border-white md:h-10 md:w-10"
+                className="pointer-events-none absolute bottom-0 end-0 h-7 w-7 border-b-4 md:border-b-8 border-e-4 md:border-e-8 border-white md:h-10 md:w-10"
               />
             </div>
           </div>
 
           {variant === "motorsport" ? (
             /* Story */
-            <p className="mx-auto mt-7  text-center text-sm leading-relaxed text-[#D3D3D3] md:text-[20px]">
-              On 29 November 2020, Romain Grosjean walked out of a 190mph <br />
-              fireball. It wasn&apos;t luck. It was engineering.
+            <p className="mx-auto mt-7 max-w-2xl text-center text-sm leading-relaxed text-[#D3D3D3] md:text-[20px]">
+              {t("hero.motorsport.story")}
             </p>
           ) : variant === "company" ? (
             /* CONTACT US CTA */
             <div className="mt-7 flex justify-center">
               <Link
-                href="/contact"
+                href={href("/contact")}
                 className="relative flex items-center rounded-md bg-[#EF4123] px-10 py-3 text-black transition-colors hover:bg-[#d63a1e]"
               >
                 <span className="text-[13px] font-semibold uppercase leading-tight tracking-tight">
-                  Contact us
+                  {t("hero.company.cta")}
                 </span>
                 <Image
                   src="/orangeArrow.svg"
                   alt=""
                   width={16}
                   height={16}
-                  className="absolute right-1.5 top-1.5 h-2.5 w-2.5 shrink-0 brightness-0"
+                  className="absolute end-1.5 top-1.5 h-2.5 w-2.5 shrink-0 brightness-0 rtl:-scale-x-100"
                   aria-hidden="true"
                 />
               </Link>
@@ -164,20 +162,18 @@ const Hero = ({ variant = "home" }) => {
             /* CTA */
             <div className="mt-7 flex justify-center">
               <Link
-                href="/products"
-                className="relative flex items-center rounded-md bg-[#EF4123] py-2.5 pl-5 pr-7 text-black transition-colors hover:bg-[#d63a1e]"
+                href={href("/products")}
+                className="relative flex items-center rounded-md bg-[#EF4123] py-2.5 ps-5 pe-7 text-black transition-colors hover:bg-[#d63a1e]"
               >
-                <span className="text-[13px] font-semibold uppercase leading-tight tracking-tight">
-                  Discover
-                  <br />
-                  our products
+                <span className="text-[13px] font-medium uppercase leading-tight tracking-tight">
+                  <Lines lines={t("hero.home.cta")} />
                 </span>
                 <Image
                   src="/orangeArrow.svg"
                   alt=""
                   width={16}
                   height={16}
-                  className="absolute right-1.5 top-1.5 h-2.5 w-2.5 shrink-0 brightness-0"
+                  className="absolute end-1.5 top-1.5 h-2.5 w-2.5 shrink-0 brightness-0 rtl:-scale-x-100"
                   aria-hidden="true"
                 />
               </Link>
