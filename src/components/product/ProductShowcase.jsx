@@ -217,13 +217,15 @@ const SizeSelect = ({ options, value, onChange }) => {
         </svg>
       </button>
 
-      {/* Floating options panel. Kept mounted and animated via opacity/scale so
-          it fades rather than snapping; pointer-events are disabled while
-          closed so it never blocks the trigger. */}
+      {/* Floating options panel. Opens *upward* — the control lives in the bar
+          pinned to the bottom of the viewport, so a downward panel would run off
+          the page. Kept mounted and animated via opacity/scale so it fades
+          rather than snapping; pointer-events are disabled while closed so it
+          never blocks the trigger. */}
       <ul
         role="listbox"
         aria-label="Sizes"
-        className={`absolute left-0 right-0 top-full z-50 mt-2 origin-top overflow-hidden rounded-xl border border-white/15 bg-neutral-900/80 p-1 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out ${
+        className={`absolute bottom-full left-0 z-50 mb-2 w-max min-w-full max-w-[min(20rem,calc(100vw-2rem))] origin-bottom overflow-hidden rounded-xl border border-white/15 bg-neutral-900/90 p-1 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out ${
           open
             ? "pointer-events-auto scale-100 opacity-100"
             : "pointer-events-none scale-95 opacity-0"
@@ -246,7 +248,7 @@ const SizeSelect = ({ options, value, onChange }) => {
                       : "text-neutral-300"
                 }`}
               >
-                <span className="truncate">{s}</span>
+                <span className="whitespace-nowrap">{s}</span>
                 {selected && <Check className="h-4 w-4 shrink-0" />}
               </button>
             </li>
@@ -270,7 +272,10 @@ const ProductShowcase = ({ product = "riot" }) => {
 
   return (
     <section
-      className="relative flex min-h-svh w-full flex-col overflow-hidden text-black"
+      // overflow-x-clip (not overflow-hidden): still contains the render and the
+      // gradient horizontally, but leaves the vertical axis unclipped so the size
+      // dropdown can float above the bottom bar.
+      className="relative flex min-h-svh w-full flex-col overflow-x-clip text-black"
       aria-label={`${data.name.join(" ")} product`}
       // Soft light-grey radial canvas: bright at the centre, darker to the
       // edges — lets the background-less render sit cleanly.

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Products shown in the header hover menu — image + short blurb per system.
 // hrefs map to the real product routes under src/app/product/*.
@@ -62,7 +62,11 @@ const menuSections = [
         href: "/technology/certifications",
         disabled: true,
       },
-      { label: "R&D and Testing", href: "/technology/research", disabled: true },
+      {
+        label: "R&D and Testing",
+        href: "/technology/research",
+        disabled: true,
+      },
       {
         label: "Impact Absorption",
         href: "/technology/impact-absorption",
@@ -90,7 +94,8 @@ const Header = () => {
   // The header floats transparently over the hero video at the top of the page.
   // On the homepage it also stays hidden through the hero's opening sequence and
   // only slides in once the video has grown to fullscreen (see .header-intro).
-  const isHome = usePathname() === "/";
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   // When expanded, the hover pill grows to the full container width and lays the
   // products out as side-by-side cards instead of the compact vertical list.
@@ -121,6 +126,37 @@ const Header = () => {
   // into its wide, container-spanning layout.
   const wide = expanded || menuOpen;
 
+  // The pill's layout (`wide`) switches between `absolute` (full-width) and
+  // `relative` (compact) — a `position` change can't be transitioned by CSS.
+  // Snapping `wide` to false the instant it closes yanks the pill back into
+  // the flow mid-collapse, which is the "jumps to the bottom, then to a side"
+  // glitch. So on close we keep rendering the wide/absolute layout for the
+  // length of the grid-rows collapse animation (500ms) and only drop back to
+  // compact after it's visually finished. Opening still flips immediately.
+  const [wideVisual, setWideVisual] = useState(false);
+  useEffect(() => {
+    if (wide) {
+      setWideVisual(true);
+      return;
+    }
+    const timeout = setTimeout(() => setWideVisual(false), 500);
+    return () => clearTimeout(timeout);
+  }, [wide]);
+
+  // True whenever any panel is showing — drives both the outside-click listener
+  // and the click-catching backdrop below.
+  const anyOpen = wideVisual || productsHovered || langOpen;
+
+  // The pill element. Anything outside it counts as "outside the header".
+  const pillRef = useRef(null);
+
+  const closeAll = () => {
+    setExpanded(false);
+    setMenuOpen(false);
+    setProductsHovered(false);
+    setLangOpen(false);
+  };
+
   // Collapse any open full-width panel back to the compact pill when the user
   // scrolls away.
   useEffect(() => {
@@ -132,6 +168,30 @@ const Header = () => {
     window.addEventListener("scroll", collapse, { passive: true });
     return () => window.removeEventListener("scroll", collapse);
   }, [wide]);
+
+  // Close on click/tap anywhere outside the pill, and on Escape. `pointerdown`
+  // (not `click`) so the panel closes on press rather than release, matching the
+  // size dropdown and native menus.
+  useEffect(() => {
+    if (!anyOpen) return;
+    const onPointerDown = (e) => {
+      if (pillRef.current && !pillRef.current.contains(e.target)) closeAll();
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") closeAll();
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [anyOpen]);
+
+  // Close the menus after a route change (tapping a link inside them).
+  useEffect(() => {
+    closeAll();
+  }, [pathname]);
 
   return (
     <header
@@ -183,12 +243,38 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Main bar: brand + actions */}
-      <div className="relative mx-auto flex container items-start justify-between px-6 py-4 md:px-8">
+      {/* Main bar: brand + actions. `justify-between` only works while both the
+          brand and the pill are in flow; once the brand goes `hidden` (see
+          below) it's the pill alone, and `justify-between` collapses a single
+          child to flex-start — i.e. the pill jumps to the LEFT edge instead of
+          staying put on the right. `ml-auto` on the pill (further down) pins it
+          right unconditionally, so this doesn't depend on justify-between at all. */}
+      <div
+        className={`relative mx-auto flex container px-6 py-4 md:px-8 ${
+          expanded ? "items-center" : "items-start"
+        }`}
+      >
+        {/* The brand mark yields to the pill: always when a full-width panel is
+            open, and on small screens whenever the products/language panel is
+            open too — below `sm` the widened pill has no room to sit beside it
+            and would otherwise squash the logo and overhang the right gutter. */}
         <Link
           href="/"
-          className={`pointer-events-auto flex items-center gap-4 transition-opacity duration-300 ${
-            wide ? "invisible opacity-0" : "opacity-100"
+          aria-hidden={anyOpen}
+          tabIndex={anyOpen ? -1 : undefined}
+          className={`pointer-events-auto shrink-0 items-center gap-2 transition-opacity duration-300 sm:gap-4 ${
+            wideVisual
+              ? // The pill is absolutely positioned here, so `invisible` (which
+                // keeps the box in flow) is enough and avoids a reflow.
+                "flex invisible opacity-0"
+              : anyOpen
+                ? // Compact pill is in normal flow: the brand must leave the flow
+                  // entirely (`hidden`, not `invisible`) or it reserves ~187px and
+                  // shoves the widened pill off the right edge. It only comes back
+                  // at `md`, the first width where brand + 420px panel + gutters
+                  // genuinely fit (at `sm`/640px it overhangs by ~7px).
+                  "hidden md:flex md:opacity-100"
+                : "flex opacity-100"
           }`}
           aria-label="High Protection Systems — home"
         >
@@ -198,10 +284,10 @@ const Header = () => {
             width={136}
             height={87}
             priority
-            className="h-14 w-auto"
+            className="h-10 w-auto sm:h-14"
           />
-          <span className="h-12 w-px bg-neutral-600" />
-          <span className="text-[13px] font-medium leading-[1.15] text-neutral-100">
+          <span className="hidden h-12 w-px bg-neutral-600 sm:block" />
+          <span className=" hidden sm:block md text-[13px] font-medium leading-[1.15] text-neutral-100">
             High
             <br />
             Protection
@@ -216,41 +302,54 @@ const Header = () => {
             expand toggle is on, the pill stretches to the full container width
             and the products lay out as side-by-side cards. */}
         <div
-          onMouseLeave={() => setLangOpen(false)}
+          ref={pillRef}
           className={`pointer-events-auto group/products rounded-xl p-2 transition-[background-color,backdrop-filter] duration-300 ${
-            wide
-              ? "absolute inset-x-6 top-4 z-10 bg-[#191919e6] backdrop-blur-3xl backdrop-saturate-150 md:inset-x-8"
-              : "relative w-max bg-[#19191999] backdrop-blur-2xl"
+            wideVisual
+              ? "absolute inset-x-6 top-4 z-10 max-h-[calc(100svh-5.5rem)] overflow-y-auto overscroll-contain bg-[#191919e6] backdrop-blur-3xl backdrop-saturate-150 md:inset-x-8"
+              : "relative ml-auto w-max bg-[#19191999] backdrop-blur-2xl"
           }`}
         >
+          {/* Wide header row. On phones the logo block and the button cluster
+              can't share one line, so `flex-wrap` lets the buttons drop below the
+              brand instead of overlapping it; from sm up it's the original
+              single-row, space-between layout. */}
           <div
-            className={`flex flex-row items-center w-full gap-2 ${
-              wide ? "justify-between" : "justify-end"
+            className={`flex w-full items-center  gap-2 ${
+              wideVisual
+                ? "justify-start sm:flex-nowrap sm:justify-between"
+                : "flex-row justify-end"
             }`}
           >
-            {wide && (
-              <div>
-                <Image
-                  onClick={() => {
-                    setExpanded(false);
-                    setMenuOpen(false);
-                  }}
-                  src="/close.svg"
-                  alt="Close menu"
-                  width={30}
-                  height={60}
-                  className="cursor-pointer p-1"
-                />
-                <div className="flex items-center py-3 gap-3 pl-1">
+            {wideVisual && (
+              <div className="min-w-0">
+                <button
+                  type="button"
+                  onClick={closeAll}
+                  aria-label="Close navigation panel"
+                  className="-m-1 flex h-9 w-9 items-center justify-center rounded-md p-1 transition hover:bg-white/10"
+                >
+                  {/* close.svg is a 25x11 pair of corner brackets, not a square
+                      glyph — size by width and let height follow, or it renders
+                      as a squashed sliver. */}
+                  <Image
+                    src="/close.svg"
+                    alt=""
+                    width={25}
+                    height={11}
+                    aria-hidden="true"
+                    className="h-auto w-5"
+                  />
+                </button>
+                <div className="flex items-center gap-3 py-3 pl-1">
                   <Image
                     src="/hpsFooterLogo.svg"
                     alt="High Protection Systems"
                     width={160}
                     height={60}
-                    className="h-14 w-auto"
+                    className="h-12 w-auto sm:h-14"
                   />
-                  <span className="h-8 w-px bg-white/20" />
-                  <span className="text-[13px] font-medium leading-[1.15] text-neutral-200">
+                  <span className="hidden sm:block h-8 w-px bg-white/20" />
+                  <span className="hidden sm:block text-[13px] font-medium leading-[1.15] text-neutral-200">
                     High
                     <br />
                     Protection
@@ -262,11 +361,13 @@ const Header = () => {
             )}
 
             <div
-              className={`flex items-center justify-between gap-2 ${
-                wide ? "w-fit" : `w-fit ${productsHovered ? "w-full" : ""}`
+              className={`flex items-center gap-2 ${
+                wideVisual
+                  ? "ml-auto w-fit justify-end"
+                  : `w-fit justify-between ${productsHovered ? "w-full" : ""}`
               }`}
             >
-              {!wide && (
+              {!wideVisual && (
                 <button
                   type="button"
                   aria-label="Expand menu"
@@ -276,8 +377,14 @@ const Header = () => {
                     setMenuOpen(false);
                     setLangOpen(false);
                   }}
-                  className={`order-first mr-6 h-11 w-11 items-center justify-center text-white transition hover:scale-110 hover:opacity-70 ${
-                    productsHovered ? "flex opacity-100" : "hidden opacity-0"
+                  // Hidden below `sm`: the 44px button plus its right margin
+                  // pushes the button row past a 320px viewport, and the
+                  // "expanded" card layout it toggles is single-column on phones
+                  // anyway, so it buys nothing there.
+                  className={`order-first mr-3 h-11 w-11 items-center justify-center text-white transition hover:scale-110 hover:opacity-70 sm:mr-6 ${
+                    productsHovered
+                      ? "hidden sm:flex sm:opacity-100"
+                      : "hidden opacity-0"
                   }`}
                 >
                   <Image
@@ -294,10 +401,6 @@ const Header = () => {
                   type="button"
                   aria-haspopup="true"
                   aria-expanded={productsHovered}
-                  onMouseEnter={() => {
-                    setProductsHovered(true);
-                    setLangOpen(false);
-                  }}
                   onClick={() => {
                     setProductsHovered((open) => !open);
                     setExpanded(false);
@@ -316,10 +419,13 @@ const Header = () => {
                 <button
                   type="button"
                   aria-label="Select language"
+                  aria-haspopup="listbox"
                   aria-expanded={langOpen}
-                  onMouseEnter={() => {
-                    setLangOpen(true);
+                  onClick={() => {
+                    setLangOpen((open) => !open);
                     setProductsHovered(false);
+                    setExpanded(false);
+                    setMenuOpen(false);
                   }}
                   className="flex h-11 w-11 items-center justify-center text-white transition hover:scale-110 hover:opacity-70"
                 >
@@ -336,7 +442,6 @@ const Header = () => {
                   type="button"
                   aria-label={menuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={menuOpen}
-                  onMouseEnter={() => setLangOpen(false)}
                   onClick={() => {
                     setMenuOpen((open) => !open);
                     setExpanded(false);
@@ -370,17 +475,28 @@ const Header = () => {
               pill width; otherwise w-0 keeps it out of the pill's width until
               hover so the collapsed pill hugs the buttons.
 
-              Only grid-template-rows + opacity are transitioned — NOT width.
-              A width transition would keep the pill (w-max) stretched wide for
-              the whole 500ms while it shrank, leaving a visible gap beside the
-              buttons on close. Snapping width instead lets the pill hug the
-              buttons immediately while the menu collapses vertically. */}
+              Width is transitioned together with grid-template-rows/opacity so
+              the cards visibly shrink instead of vanishing the instant `expanded`
+              flips (a `w-full` -> `w-0` snap collapses the grid to zero width
+              before the row-height animation has a chance to read). This relies
+              on the pill itself staying in its wide/absolute layout for the
+              same duration on close (see `wideVisual`), so the widening content
+              never overhangs a pill that has already shrunk back to compact. */}
           <div
-            className={`grid opacity-0 transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`grid opacity-0 transition-[grid-template-rows,width,opacity] duration-500 ease-in-out ${
               productsHovered
                 ? "grid-rows-[1fr] opacity-100"
                 : "grid-rows-[0fr]"
-            } ${expanded ? "w-full" : productsHovered ? "w-105" : "w-0"}`}
+            } ${
+              expanded
+                ? "w-full"
+                : productsHovered
+                  ? // 26.25rem = the original 420px. Clamp to the viewport minus
+                    // the page gutters (2x1.5rem) and the pill's own padding
+                    // (2x0.5rem) so the panel never overhangs the right edge.
+                    "w-[min(26.25rem,calc(100vw-5rem))]"
+                  : "w-0"
+            }`}
           >
             <div className="overflow-hidden">
               {expanded ? (
@@ -422,7 +538,7 @@ const Header = () => {
                 </div>
               ) : (
                 /* Compact layout: vertical product list */
-                <div className="w-105 px-2 pt-1.5">
+                <div className="w-full px-2 pt-1.5">
                   {productMenu.map((product, i) => (
                     <Link
                       key={product.title}
@@ -471,8 +587,8 @@ const Header = () => {
               transitioned, matching the products menu, so the pill never lingers
               wide on close. */}
           <div
-            className={`grid w-full transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              langOpen && !wide
+            className={`grid w-full transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+              langOpen && !wideVisual
                 ? "grid-rows-[1fr] opacity-100"
                 : "grid-rows-[0fr] opacity-0"
             }`}
@@ -514,9 +630,12 @@ const Header = () => {
               Layout is an explicit two-part grid: a "Company Overview" media
               card on the left and a link grid on the right. The right grid is
               three columns; Latest News spans two of them with its links flowing
-              inline, and Contact Us takes the third — mirroring the reference. */}
+              inline, and Contact Us takes the third — mirroring the reference.
+              Width is transitioned alongside grid-template-rows/opacity (see the
+              products panel above for why: an untransitioned width snap collapses
+              the nav grid to zero before the row-height animation can play). */}
           <div
-            className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`grid transition-[grid-template-rows,width,opacity] duration-500 ease-in-out ${
               menuOpen
                 ? "grid-rows-[1fr] w-full opacity-100"
                 : "grid-rows-[0fr] w-0 opacity-0"
@@ -593,7 +712,7 @@ const Header = () => {
                                 {link.label}
                               </Link>
                             </li>
-                          )
+                          ),
                         )}
                       </ul>
                     </div>

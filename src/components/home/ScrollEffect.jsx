@@ -217,7 +217,7 @@ const Panel = ({ panel, style, zIndex }) => {
   return (
     <div
       className="absolute inset-0 flex items-center justify-center px-3 py-5 md:px-6 md:py-6"
-      style={{ ...style, zIndex }}
+      style={{ ...style, zIndex, willChange: "transform" }}
     >
       <PanelCard panel={panel} />
     </div>
@@ -232,13 +232,21 @@ const ScrollEffect = () => {
 
   useEffect(() => {
     let frame = 0;
+    // Mobile browsers show/hide their address bar while scrolling, which
+    // changes window.innerHeight mid-gesture. Using that directly here
+    // desyncs from the CSS stage (which is sized in svh — a viewport unit
+    // that stays stable through that chrome collapse), producing visible
+    // jumps/glitches as you scroll. document.documentElement.clientHeight
+    // tracks the same stable small-viewport size as svh.
+    const getViewportHeight = () =>
+      document.documentElement.clientHeight || window.innerHeight;
     const update = () => {
       frame = 0;
       const section = sectionRef.current;
       if (!section) return;
       const rect = section.getBoundingClientRect();
       // Scrollable distance = section height minus the one pinned viewport.
-      const scrollable = section.offsetHeight - window.innerHeight;
+      const scrollable = section.offsetHeight - getViewportHeight();
       // How far we've scrolled INTO the section (rect.top goes 0 → -scrollable).
       const scrolled = Math.min(Math.max(-rect.top, 0), scrollable);
       const ratio = scrollable > 0 ? scrolled / scrollable : 0;
@@ -269,9 +277,9 @@ const ScrollEffect = () => {
       ref={sectionRef}
       aria-label="Riot helmet range"
       className="relative"
-      style={{ height: `${panels.length * 100}vh` }}
+      style={{ height: `${panels.length * 100}svh` }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="sticky top-0 h-svh w-full overflow-hidden">
         {/* Background — stays locked in place; only which image is opaque
             changes (scroll1 → scroll2 → scroll3) as the deck advances. */}
         <div className="absolute inset-0" aria-hidden>
@@ -305,8 +313,10 @@ const ScrollEffect = () => {
             const depth = Math.min(-offset, 2);
             transform = `translateY(${depth * 1.5}rem) scale(${1 - depth * 0.04})`;
           } else {
-            // Leaving card: slide straight up out of view.
-            transform = `translateY(${-offset * 100}vh)`;
+            // Leaving card: slide straight up out of view. svh (not vh) to
+            // stay in sync with the svh-sized stage as mobile browser chrome
+            // collapses mid-scroll.
+            transform = `translateY(${-offset * 100}svh)`;
           }
           return (
             <Panel
@@ -318,7 +328,6 @@ const ScrollEffect = () => {
                 transform,
                 // Once fully gone, drop it out of the paint/hit-testing.
                 pointerEvents: offset > 1 ? "none" : "auto",
-                transition: "transform 0.1s linear",
               }}
             />
           );
